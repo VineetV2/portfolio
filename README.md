@@ -8,7 +8,7 @@ Personal portfolio site for **Vineet Vora** — ML Engineer & Full-Stack Develop
 
 - Pure HTML / CSS / JavaScript — no frameworks, no build step
 - Google Fonts (Sora + JetBrains Mono)
-- Single-file architecture (`index.html`)
+- Separated architecture — `index.html`, `style.css`, `script.js`
 
 ## Features
 
@@ -47,7 +47,9 @@ python3 -m http.server 8000
 ## Files
 
 ```
-index.html          — entire site (HTML + CSS + JS)
+index.html          — HTML structure and content
+style.css           — all styles (themes, layout, components, responsive)
+script.js           — interactions (canvas, cursor, scroll, theme toggle)
 vineet.jpeg         — profile photo (optimized)
 Vineet_Vora.pdf     — resume
 ```
