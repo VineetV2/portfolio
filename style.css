@@ -745,6 +745,7 @@ button { cursor: none; }
   transition: all 0.4s var(--ease);
   position: relative;
   overflow: hidden;
+  min-width: 0;
 }
 .project-card::before {
   content: '';
@@ -1181,7 +1182,7 @@ button { cursor: none; }
   flex-shrink: 0;
   background: var(--accent-dim);
 }
-.cert-text { flex: 1; min-width: 0; }
+.cert-text { flex: 1; min-width: 0; overflow-wrap: break-word; }
 .cert-text h4 {
   font-family: var(--font-display);
   font-size: 0.9rem;
@@ -1375,11 +1376,13 @@ button:focus:not(:focus-visible) {
   }
   .skills-columns { grid-template-columns: 1fr; }
   .cert-grid { grid-template-columns: 1fr; }
+  .marquee::before, .marquee::after { width: 50px; }
 }
 
 @media (max-width: 768px) {
   .header-nav, .header-right { display: none; }
   .hamburger { display: flex; }
+  .header-inner { padding: 0.85rem 1.5rem; }
   .main-content { padding: 0 1.5rem; }
   .hero { padding: 7rem 1.5rem 3rem; min-height: auto; }
   .hero-name { font-size: 3.2rem; }
@@ -1389,18 +1392,44 @@ button:focus:not(:focus-visible) {
   .timeline-entry {
     grid-template-columns: 1fr;
     gap: 0.5rem;
+    padding: 1.8rem;
   }
   .timeline-entry::before { display: none; }
+  .pub-card { padding: 2rem 1.8rem; }
+  .project-card.featured { padding: 2rem 1.8rem; }
   .project-metrics { flex-wrap: wrap; gap: 1rem; }
   .hero-actions { flex-direction: column; align-items: center; }
   .btn { width: 100%; text-align: center; max-width: 280px; }
-  .contact-card-inner { flex-direction: column; padding: 2rem; }
+  .contact-card-inner { flex-direction: column; padding: 1.5rem; }
+  .contact-item { font-size: 0.72rem; padding: 0.8rem 1.2rem; word-break: break-all; }
   .contact-headline { font-size: 2.2rem; }
   .section-header { margin-bottom: 2.5rem; }
+  .theme-toggle {
+    bottom: calc(1.2rem + env(safe-area-inset-bottom, 0px));
+    right: calc(1.2rem + env(safe-area-inset-right, 0px));
+  }
+  .site-header {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+  .mobile-menu {
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
 }
 
 @media (max-width: 480px) {
   .hero-name { font-size: 2.6rem; }
   .project-card { padding: 1.5rem; }
+  .project-card.featured { padding: 1.5rem; }
   .about-principle, .about-drives { padding: 1.8rem; }
+  .about-intro { padding: 1.5rem; }
+  .pub-card { padding: 1.5rem; }
+  .timeline-entry { padding: 1.5rem; }
+  .edu-card { padding: 1.5rem; }
+  .contact-card-inner { padding: 1.2rem; }
+  .contact-item { font-size: 0.68rem; padding: 0.7rem 1rem; }
+  .cert-bar { padding: 1rem 1.2rem; }
+  .section-header { gap: 1rem; }
+  .hero-tagline { font-size: 0.95rem; }
+  .site-footer { padding: 2rem 1.5rem; }
 }
