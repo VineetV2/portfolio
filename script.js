@@ -9,8 +9,10 @@
   const MOUSE_DIST = 200;
 
   function resize() {
-    w = canvas.width = hero.offsetWidth;
-    h = canvas.height = hero.offsetHeight;
+    const nw = hero.offsetWidth;
+    const nh = hero.offsetHeight;
+    w = canvas.width = nw;
+    h = canvas.height = nh;
   }
 
   function initParticles() {
