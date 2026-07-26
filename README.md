@@ -1,59 +1,51 @@
 # vineetvora.dev
 
-Personal portfolio site for **Vineet Vora** — ML Engineer & Full-Stack Developer, MS in AI @ NJIT.
+Personal site for **Vineet Vora** — software engineer, AI systems. MS in Artificial
+Intelligence at NJIT.
 
-**Live:** [vineetvora.dev](https://vineetvora.dev)
+**Live:** [vineetvora.dev](https://vineetvora.dev) · deployed on Cloudflare Pages from `main`.
 
-## Tech Stack
+## Concept
 
-- Pure HTML / CSS / JavaScript — no frameworks, no build step
-- Google Fonts (Sora + JetBrains Mono)
-- Separated architecture — `index.html`, `style.css`, `script.js`
+The page is a technical document rather than a website — a dossier. Sections are numbered
+(`§ 01`–`§ 06`), projects are plated figures (`Fig. 1`–`Fig. 5`) with their metadata set in
+the margin, results are typeset tables rather than metric cards, the publication is `Ref. 1`,
+and the footer is a colophon.
 
-## Features
+## Stack
 
-- **Canvas particle network** — mouse-reactive animated background with connection lines
-- **Kinetic typography** — character-by-character hero text reveal
-- **Custom cursor** — dot + trailing ring with hover expansion (desktop only)
-- **Magnetic hover** — buttons subtly follow cursor on hover
-- **Dark/light theme** — toggle with localStorage persistence, dark default
-- **Film grain overlay** — SVG noise texture for depth
-- **Infinite marquee** — scrolling tech stack ticker
-- **Bento grid projects** — featured project with side metrics
-- **Animated gradient border** — contact card with shifting gradient
-- **Scroll reveal** — staggered fade-in animations via IntersectionObserver
-- **Fully responsive** — mobile menu, adaptive layouts, touch-friendly
-
-## Performance & SEO
-
-- Optimized image (119 KB)
-- Inline SVG favicon (no extra request)
-- Canvas pauses when off-screen (IntersectionObserver)
-- `prefers-reduced-motion` support
-- Schema.org JSON-LD structured data
-- Open Graph + Twitter Card meta tags
-- Semantic HTML with proper heading hierarchy
-- Canonical URL + robots meta
-
-## Local Development
-
-Just open `index.html` in a browser. No build tools needed.
-
-```bash
-# or use a local server
-python3 -m http.server 8000
-```
+- Vanilla HTML, CSS and JavaScript. No framework, no build step, no dependencies beyond
+  three webfonts.
+- **Bricolage Grotesque** (display) · **Newsreader** (prose) · **DM Mono** (annotations)
+- One accent colour — vermillion `#BC3517`, inverted to `#FF7A55` in the night edition.
 
 ## Files
 
 ```
-index.html          — HTML structure and content
-style.css           — all styles (themes, layout, components, responsive)
-script.js           — interactions (canvas, cursor, scroll, theme toggle)
-vineet.jpeg         — profile photo (optimized)
-Vineet_Vora.pdf     — resume
+index.html        structure and content
+style.css         tokens, layout, both themes, responsive
+script.js         theme toggle, drawer, reading progress, scroll reveal, section tracking
+vineet.jpeg       portrait
+Vineet_Vora.pdf   CV
+wrangler.jsonc    Cloudflare Pages config
 ```
 
-## License
+## Accessibility
 
-MIT
+- Every ink and accent token meets WCAG AA against its background in both the paper and
+  night editions. Floor 4.79:1.
+- One `<h1>`, no heading-level skips, all tables captioned with scoped row headers,
+  decorative marks are `aria-hidden`.
+- Works with JavaScript disabled — scroll reveals are progressive enhancement.
+- `prefers-reduced-motion` disables reveals and transitions.
+
+## Local
+
+```bash
+python3 -m http.server 8000
+```
+
+## History
+
+The previous version of this site — dark, amber, canvas particle network — is preserved on
+the [`v1-original`](https://github.com/VineetV2/portfolio/tree/v1-original) branch.
