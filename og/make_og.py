@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
 """
-Builds the Open Graph card for vineetvora.dev — the 1200x630 image LinkedIn,
-Slack, Twitter and iMessage show when the link is shared.
+Builds link cards in the site's v3 "dossier" language — warm paper, one
+vermillion accent, Bricolage Grotesque display, DM Mono annotations.
 
-Matches the site's v3 "dossier" design: warm paper, one vermillion accent,
-Bricolage Grotesque display, DM Mono annotations.
+    python3 make_og.py
 
-Fonts are fetched from the Google Fonts repo into /tmp/ogfonts on first run.
+Outputs:
+    ../og-card.png                        site Open Graph image (referenced by index.html)
+    ../../linkedin/thumbnails/ieee.png    custom thumbnail to upload for the IEEE link,
+                                          because ieeexplore.ieee.org serves no og:image
 
-    python3 make_og.py            # writes ../og-card.png
+Fonts are pulled from the Google Fonts repo into /tmp/ogfonts on first run.
 """
 
 import os
@@ -18,9 +20,11 @@ from PIL import Image, ImageDraw, ImageFont
 W, H = 1200, 630
 PAPER = (250, 248, 243)
 INK = (22, 21, 15)
+INK_2 = (75, 71, 61)
 INK_3 = (110, 104, 88)
 ACCENT = (188, 53, 23)
 RULE = (216, 211, 198)
+M = 76  # margin
 
 FONT_DIR = "/tmp/ogfonts"
 BASE = "https://raw.githubusercontent.com/google/fonts/main/ofl"
@@ -36,13 +40,10 @@ def ensure_fonts():
         path = os.path.join(FONT_DIR, name)
         if not os.path.exists(path) or os.path.getsize(path) < 1000:
             subprocess.run(["curl", "-sL", "-o", path, url], check=True)
-    return FONT_DIR
 
 
 def display(size, weight=800):
-    """Bricolage Grotesque at a given weight, via the variable-font axes."""
     f = ImageFont.truetype(os.path.join(FONT_DIR, "Bricolage.ttf"), size)
-    # axes order: Optical size, Weight, Width
     f.set_variation_by_axes([min(96, max(12, size)), weight, 100])
     return f
 
@@ -51,53 +52,92 @@ def mono(size):
     return ImageFont.truetype(os.path.join(FONT_DIR, "DMMono.ttf"), size)
 
 
-def build(out_path):
+def spaced(text):
+    return "  ".join(text.upper())
+
+
+def fit_display(draw, lines, start_size, max_w, weight=800):
+    """Largest display size at which every line fits the column."""
+    size = start_size
+    while size > 40:
+        f = display(size, weight)
+        if all(draw.textbbox((0, 0), ln, font=f)[2] <= max_w for ln in lines):
+            return f, size
+        size -= 2
+    return display(40, weight), 40
+
+
+def card(kicker, lines, accent_index, footer_left, footer_right, sub=None):
     ensure_fonts()
     img = Image.new("RGB", (W, H), PAPER)
     d = ImageDraw.Draw(img)
+    col = W - 2 * M
 
-    M = 76  # margin
-
-    # ── masthead rule ────────────────────────────────────────────────
     d.rectangle([0, 0, W, 9], fill=INK)
 
-    # ── kicker ───────────────────────────────────────────────────────
-    kicker = mono(21)
-    d.text((M, 74), "P O R T F O L I O    ·    N E W A R K ,  N J    ·    M M X X V I",
-           font=kicker, fill=INK_3)
+    # Letter-spaced kicker gets wide fast — shrink until it clears the margin.
+    ktext = spaced(kicker)
+    for ks in (21, 20, 19, 18, 17, 16, 15, 14):
+        kfont = mono(ks)
+        if d.textbbox((0, 0), ktext, font=kfont)[2] <= col:
+            break
+    d.text((M, 74), ktext, font=kfont, fill=INK_3)
     d.rectangle([M, 118, W - M, 119], fill=RULE)
 
-    # ── headline ─────────────────────────────────────────────────────
-    big = display(96, 800)
-    y = 152
-    lh = 100
-    d.text((M, y), "Software engineer,", font=big, fill=INK)
-    d.text((M, y + lh), "AI systems", font=big, fill=ACCENT)
-    d.text((M, y + lh * 2), "end to end", font=big, fill=INK)
+    big, size = fit_display(d, lines, 96, col)
+    lh = int(size * 1.04)
+    top = 152 if not sub else 146
+    for i, ln in enumerate(lines):
+        d.text((M, top + lh * i), ln, font=big, fill=ACCENT if i == accent_index else INK)
 
-    # ── footer ───────────────────────────────────────────────────────
+    if sub:
+        d.text((M, top + lh * len(lines) + 14), sub, font=mono(21), fill=INK_2)
+
     d.rectangle([M, H - 118, W - M, H - 117], fill=RULE)
 
-    url_font = display(34, 600)
-    url_text = "vineetvora.dev"
-    d.text((M, H - 92), url_text, font=url_font, fill=INK)
-    url_w = d.textbbox((M, H - 92), url_text, font=url_font)[2]
+    lf = display(34, 600)
+    d.text((M, H - 92), footer_left, font=lf, fill=INK)
+    left_w = d.textbbox((M, H - 92), footer_left, font=lf)[2]
 
-    # Right-aligned strapline. Shrink until it clears the URL with a real gap
-    # rather than trusting that it happens to fit.
-    line = "Open to Forward Deployed Engineer roles"
-    for size in (20, 19, 18, 17, 16):
-        meta = mono(size)
-        w = d.textbbox((0, 0), line, font=meta)[2]
-        if (W - M - w) - url_w >= 48:
+    for s in (20, 19, 18, 17, 16, 15):
+        rf = mono(s)
+        rw = d.textbbox((0, 0), footer_right, font=rf)[2]
+        if (W - M - rw) - left_w >= 48:
             break
-    d.text((W - M - w, H - 84), line, font=meta, fill=INK_3)
+    d.text((W - M - rw, H - 84), footer_right, font=rf, fill=INK_3)
 
-    img.save(out_path, "PNG", optimize=True)
-    return out_path
+    return img
+
+
+def main():
+    here = os.path.dirname(os.path.abspath(__file__))
+    root = os.path.normpath(os.path.join(here, "..", ".."))
+
+    site = card(
+        kicker="Portfolio · Newark, NJ · MMXXVI",
+        lines=["Software engineer,", "AI systems", "end to end"],
+        accent_index=1,
+        footer_left="vineetvora.dev",
+        footer_right="Open to Forward Deployed Engineer roles",
+    )
+    p1 = os.path.join(here, "..", "og-card.png")
+    site.save(p1, "PNG", optimize=True)
+    print("wrote", os.path.normpath(p1), os.path.getsize(p1), "bytes")
+
+    ieee = card(
+        kicker="Publication · IEEE · NJFET 2025",
+        lines=["Catching faults", "before they", "become fires"],
+        accent_index=2,
+        sub="Automatic power line defect detection from UAV imagery",
+        footer_left="IEEE Xplore",
+        footer_right="DOI 10.1109/NJFET67489.2025.11380637",
+    )
+    out_dir = os.path.join(root, "linkedin", "thumbnails")
+    os.makedirs(out_dir, exist_ok=True)
+    p2 = os.path.join(out_dir, "ieee.png")
+    ieee.save(p2, "PNG", optimize=True)
+    print("wrote", os.path.normpath(p2), os.path.getsize(p2), "bytes")
 
 
 if __name__ == "__main__":
-    here = os.path.dirname(os.path.abspath(__file__))
-    out = build(os.path.join(here, "..", "og-card.png"))
-    print("wrote", os.path.normpath(out), os.path.getsize(out), "bytes")
+    main()
