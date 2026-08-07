@@ -109,6 +109,40 @@ def card(kicker, lines, accent_index, footer_left, footer_right, sub=None):
     return img
 
 
+def banner():
+    """
+    LinkedIn cover, 1584x396.
+
+    The profile photo sits over the lower-left, and mobile crops the outer
+    edges, so everything lives in a band from x=470 to x=1360 and stays clear
+    of the bottom 90px.
+    """
+    ensure_fonts()
+    img = Image.new("RGB", (1584, 396), PAPER)
+    d = ImageDraw.Draw(img)
+
+    d.rectangle([0, 0, 1584, 8], fill=INK)
+    d.rectangle([0, 388, 1584, 396], fill=ACCENT)
+
+    x = 430
+    d.text((x, 92), spaced("Vineetvora.dev"), font=mono(19), fill=INK_3)
+    d.rectangle([x, 130, 1250, 131], fill=RULE)
+
+    head = display(74, 800)
+    d.text((x, 152), "AI systems,", font=head, fill=INK)
+    w = d.textbbox((x, 152), "AI systems,", font=head)[2]
+    d.text((w + 22, 152), "end to end", font=head, fill=ACCENT)
+
+    d.text((x, 252), "Scoping  ·  building  ·  deploying  ·  explaining the result",
+           font=mono(20), fill=INK_2)
+
+    tag = mono(19)
+    line = "Open to Forward Deployed Engineer roles  ·  MS in AI, NJIT"
+    d.text((x, 292), line, font=tag, fill=ACCENT)
+
+    return img
+
+
 def main():
     here = os.path.dirname(os.path.abspath(__file__))
     root = os.path.normpath(os.path.join(here, "..", ".."))
@@ -137,6 +171,10 @@ def main():
     p2 = os.path.join(out_dir, "ieee.png")
     ieee.save(p2, "PNG", optimize=True)
     print("wrote", os.path.normpath(p2), os.path.getsize(p2), "bytes")
+
+    p3 = os.path.join(out_dir, "linkedin-banner.png")
+    banner().save(p3, "PNG", optimize=True)
+    print("wrote", os.path.normpath(p3), os.path.getsize(p3), "bytes")
 
 
 if __name__ == "__main__":
