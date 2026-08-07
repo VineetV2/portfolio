@@ -22,8 +22,9 @@ about how.
 
 ## 2. The central decision: no retrieval
 
-The corpus — site text, résumé, thesis detail, leadership record, availability — is
-roughly 8,000 tokens. It fits in one context window several times over.
+The corpus — site text, résumé, thesis detail, leadership record, availability — fits in
+one context window several times over. The site's own visible text measures 1,513 tokens;
+the assembled corpus is expected to land in the 4,000–8,000 range.
 
 **So this does not retrieve.** The whole corpus goes in the system prompt on every call.
 
@@ -33,8 +34,13 @@ answer sitting in a chunk that didn't get pulled — in exchange for nothing.
 
 This is stated on the page, in the margin of § 00:
 
-> Vineet's corpus is roughly 8,000 tokens — small enough to fit in one context window,
+> Vineet's corpus is N tokens across M blocks — small enough to fit in one context window,
 > so this doesn't retrieve. Retrieval would add failure modes and buy nothing at this size.
+
+**N and M must be the measured values, not estimates.** The parser already walks every
+block, so it computes both; the build emits them and the margin note renders from that
+output. Publishing a round number that turns out to be wrong would undercut the exact
+quality — measuring before claiming — that the note exists to demonstrate.
 
 That sentence is the point of the feature as a portfolio artifact. Building a vector
 database for 8,000 tokens demonstrates tutorial-following. Declining to, and saying why,
@@ -108,6 +114,11 @@ Newark NJ, New York NY, or remote.
 The `source:` line becomes the citation link and is optional; blocks without one render
 uncited rather than breaking.
 
+**The corpus is bundled into the Worker at deploy time**, imported as a text module and
+parsed once at module scope — not fetched over HTTP at request time. Parsing happens on
+cold start only, so a malformed corpus fails at deploy rather than intermittently in
+front of a visitor, and there is no network hop in the request path.
+
 **Contents.** Everything on the site, plus three things that are not:
 
 - Full thesis detail — pipeline stages, the constraint, what was cut and why
@@ -152,6 +163,17 @@ cannot be talked into apologising its way into a guess.
 | "Would he be good at X?" | States relevant evidence from the corpus, offers no opinion on fit |
 
 Handling these before the model runs means there is nothing to jailbreak.
+
+**Matching is a conservative keyword list**, checked case-insensitively against the raw
+question — `visa`, `sponsorship`, `h1b`, `h-1b`, `opt`, `cpt`, `work authorization`,
+`authorized to work`, `green card`, `citizen`; `salary`, `compensation`, `pay`, `rate`,
+`how much`; `would he be good`, `is he a good fit`, `do you think he`, `should we hire`.
+
+**False positives are acceptable and false negatives are not.** Deflecting an innocent
+question to Vineet's email costs the visitor one click. Letting a compensation question
+through costs a negotiating position. The list errs toward over-matching, and the fixed
+replies are written so that being deflected unnecessarily still reads as helpful rather
+than evasive.
 
 ## 6. Abuse, cost, failure
 
