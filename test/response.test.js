@@ -28,6 +28,17 @@ describe('parseSources', () => {
     const r = parseSources('A.\nsources:a,b')
     expect(r.ids).toEqual(['a', 'b'])
   })
+
+  it('ignores an early prose line that starts with "Sources" and uses the trailing SOURCES line', () => {
+    const r = parseSources('Sources: are limited for this claim.\n\nSOURCES: thesis-accuracy')
+    expect(r.answer).toBe('Sources: are limited for this claim.')
+    expect(r.ids).toEqual(['thesis-accuracy'])
+  })
+
+  it('uses the last SOURCES line when the model emits it twice', () => {
+    const r = parseSources('A.\nSOURCES: a\n\nSOURCES: b')
+    expect(r.ids).toEqual(['b'])
+  })
 })
 
 describe('validateCitations', () => {
