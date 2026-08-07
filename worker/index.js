@@ -23,11 +23,11 @@ export default {
     try {
       ({ question } = await request.json())
     } catch {
-      return json({ answer: INVALID_REPLY, sources: [] })
+      return json({ answer: INVALID_REPLY, sources: [], meta: {} })
     }
 
     const input = checkInput(question)
-    if (!input.ok) return json({ answer: INVALID_REPLY, sources: [] })
+    if (!input.ok) return json({ answer: INVALID_REPLY, sources: [], meta: {} })
 
     const deflection = matchDeflection(question)
     if (deflection) {
