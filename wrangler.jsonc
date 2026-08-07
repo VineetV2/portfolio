@@ -8,5 +8,11 @@
   },
   "ai": {
     "binding": "AI"
-  }
+  },
+  "analytics_engine_datasets": [
+    { "binding": "ASK_LOG", "dataset": "portfolio_ask" }
+  ],
+  "rules": [
+    { "type": "Text", "globs": ["**/*.md"], "fallthrough": true }
+  ]
 }

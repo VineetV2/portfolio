@@ -12,3 +12,5 @@ package-lock.json
 wrangler.jsonc
 .assetsignore
 .gitignore
+corpus
+vitest.config.js
