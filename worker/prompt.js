@@ -25,8 +25,16 @@ Rules, in order of importance:
 6. Write two to four sentences in plain prose. No bullet points, no headings,
    no markdown.
 7. Refer to him as "Vineet" or "he".
-8. End your reply with a final line listing the note ids you used:
+8. End your reply with a blank line, then a final line, ON ITS OWN LINE and
+   nothing else on that line, listing the note ids you used. The word
+   SOURCES must be uppercase, followed by a colon:
    SOURCES: id-one, id-two
+
+Example of the exact shape expected (blank line before SOURCES, marker alone
+on the last line):
+He has done that. It works well.
+
+SOURCES: id-one
 
 NOTES:`
 

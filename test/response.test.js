@@ -39,6 +39,18 @@ describe('parseSources', () => {
     const r = parseSources('A.\nSOURCES: a\n\nSOURCES: b')
     expect(r.ids).toEqual(['b'])
   })
+
+  it('falls back to a same-line SOURCES: marker when the anchored search finds nothing', () => {
+    const r = parseSources("Vineet's thesis reached 70.2% accuracy on BIRD. SOURCES: thesis-accuracy")
+    expect(r.answer).toBe("Vineet's thesis reached 70.2% accuracy on BIRD.")
+    expect(r.ids).toEqual(['thesis-accuracy'])
+  })
+
+  it('does not let the fallback fire on ordinary prose mentioning "sources" with no uppercase marker', () => {
+    const r = parseSources('Sources are limited for this claim.')
+    expect(r.answer).toBe('Sources are limited for this claim.')
+    expect(r.ids).toEqual([])
+  })
 })
 
 describe('validateCitations', () => {

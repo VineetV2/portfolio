@@ -76,15 +76,27 @@ export default {
 
 const meta = () => ({ blockCount: stats.blockCount, approxTokens: stats.approxTokens })
 
-/** Question text and outcome only. No IP, no fingerprint, no identifiers. */
-function log(env, ctx, question, outcome) {
+/**
+ * Question text and outcome only. No IP, no fingerprint, no identifiers.
+ * Exported for testing. Logging must never break an otherwise successful
+ * request: `writeDataPoint` can throw synchronously (e.g. a binding that
+ * validates data-point shape or limits before returning a promise), so that
+ * call is wrapped in its own try/catch rather than relying on `.catch()`,
+ * which only handles a promise rejection, not a throw that happens before
+ * the promise is ever created.
+ */
+export function log(env, ctx, question, outcome) {
   if (!env.ASK_LOG) return
-  ctx.waitUntil(
-    Promise.resolve(
-      env.ASK_LOG.writeDataPoint({
-        blobs: [question.slice(0, 200), outcome],
-        indexes: [outcome]
-      })
-    ).catch(() => {})
-  )
+  try {
+    ctx.waitUntil(
+      Promise.resolve(
+        env.ASK_LOG.writeDataPoint({
+          blobs: [question.slice(0, 200), outcome],
+          indexes: [outcome]
+        })
+      ).catch(() => {})
+    )
+  } catch {
+    // Synchronous throw from writeDataPoint (or waitUntil) — swallow it.
+  }
 }
