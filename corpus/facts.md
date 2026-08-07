@@ -52,16 +52,19 @@ variants bought no accuracy gain.
 
 ## surya-overview
 source: #s02 | Selected Work, Fig. 2
-Since Dec 2025, Vineet has been LoRA-adapting Surya, a 366M-parameter Vision
-Transformer pretrained on NASA solar imagery, to forecast interplanetary magnetic
-field conditions 72 hours out — the kind of signal utilities and satellite operators
-watch before a geomagnetic storm. Training uses 13-channel AIA EUV and HMI
-magnetogram inputs at 512×512, with PyTorch, LoRA, CUDA, and Weights & Biases.
+Since Dec 2025, Vineet has been adapting Surya, a 366M-parameter Vision Transformer
+pretrained on NASA solar imagery, to forecast interplanetary magnetic field
+conditions 72 hours out — the kind of signal utilities and satellite operators watch
+before a geomagnetic storm. He compared a LoRA-adapted encoder against a frozen
+encoder with a 3-layer MLP head on 13-channel AIA EUV and HMI magnetogram inputs at
+512×512, using PyTorch, LoRA, CUDA, and Weights & Biases.
 
 ## surya-results
 source: #s02 | Selected Work, Fig. 2
-The Surya forecasting work reaches 3.39 nT RMSE, with 96.5% of forecasts rated
-excellent or good, at 3.5× lower training cost than a full fine-tune. Code is at
+The frozen encoder won: it reached 3.39 nT RMSE using only 0.34% of trainable
+parameters, and was 3.5× more efficient than the LoRA-adapted approach. Validated by
+Leave-One-Flare-Out cross-validation across 57 M5.0+ and X-class solar flare events,
+with 96.5% of folds completing successfully. Code is at
 github.com/VineetV2/imf-bz-forecasting-surya.
 
 ## hadoop-overview

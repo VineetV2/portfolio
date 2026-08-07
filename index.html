@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
 <title>Vineet Vora — Software Engineer, AI Systems</title>
-<meta name="description" content="Vineet Vora — software engineer who takes AI systems from an ambiguous problem to something deployed and used. MS in AI at NJIT. Natural language to SQL over enterprise databases, LoRA fine-tuning of Vision Transformers, 118M+ record pipelines on Hadoop/AWS.">
+<meta name="description" content="Vineet Vora — software engineer who takes AI systems from an ambiguous problem to something deployed and used. MS in AI at NJIT. Natural language to SQL over enterprise databases, Vision Transformer adaptation for geomagnetic storm forecasting, 118M+ record pipelines on Hadoop/AWS.">
 <meta name="keywords" content="Vineet Vora, Forward Deployed Engineer, Software Engineer, AI Engineer, Text-to-SQL, LLM, PyTorch, vLLM, Hadoop, NJIT">
 <meta name="author" content="Vineet Vora">
 <meta name="robots" content="index, follow">
@@ -226,19 +226,20 @@
       <div class="col">
         <h3>Forecasting geomagnetic storms</h3>
         <p class="standfirst">
-          LoRA adaptation of a 366M-parameter Vision Transformer pretrained on NASA solar imagery.
+          A frozen encoder beats LoRA on a 366M-parameter Vision Transformer pretrained on NASA solar imagery.
         </p>
         <p>
           Can you see a storm seventy-two hours out? Adapted Surya to forecast the interplanetary
           magnetic field conditions utilities and satellite operators watch before a geomagnetic
-          storm — trained on 13-channel AIA EUV and HMI magnetogram inputs at 512&times;512.
+          storm — comparing a frozen encoder against LoRA on 13-channel AIA EUV and HMI magnetogram
+          inputs at 512&times;512.
         </p>
         <table class="data">
           <caption class="vh">Forecast performance</caption>
           <tbody>
             <tr><th scope="row">RMSE</th><td class="fignum">3.39<small> nT</small></td></tr>
-            <tr><th scope="row">Rated excellent / good</th><td class="fignum">96.5<small>%</small></td></tr>
-            <tr><th scope="row">Training cost vs. full fine-tune</th><td class="fignum">3.5<small>× cheaper</small></td></tr>
+            <tr><th scope="row">Cross-validation folds succeeded</th><td class="fignum">96.5<small>%</small></td></tr>
+            <tr><th scope="row">Efficiency vs. LoRA</th><td class="fignum">3.5<small>× more efficient</small></td></tr>
           </tbody>
         </table>
         <p class="src"><a href="https://github.com/VineetV2/imf-bz-forecasting-surya" target="_blank" rel="noopener">github.com/VineetV2/imf-bz-forecasting-surya <span aria-hidden="true">↗</span></a></p>
