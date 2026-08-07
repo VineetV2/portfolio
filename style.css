@@ -473,7 +473,7 @@ table { border-collapse: collapse; width: 100%; }
   padding: 0.3rem 0;
 }
 .ask-input::placeholder { color: var(--ink-3); }
-.ask-input:focus { outline: none; }
+.ask-input:focus:not(:focus-visible) { outline: none; }
 .ask-form:focus-within { border-bottom-color: var(--accent); }
 
 .ask-send {

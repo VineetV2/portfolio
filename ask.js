@@ -71,14 +71,15 @@
           fallback()
           return
         }
-        var nodes = [para(data.answer)]
-        if (data.sources && data.sources.length) nodes.push(sourceLine(data.sources))
-        render(nodes)
-        if (data.meta && statsEl) {
+        if (data.meta && statsEl && typeof data.meta.blockCount === 'number' &&
+            typeof data.meta.approxTokens === 'number') {
           statsEl.textContent =
             data.meta.blockCount + ' blocks · ~' +
             data.meta.approxTokens.toLocaleString() + ' tokens'
         }
+        var nodes = [para(data.answer)]
+        if (data.sources && data.sources.length) nodes.push(sourceLine(data.sources))
+        render(nodes)
       })
       .catch(function () {
         fallback()

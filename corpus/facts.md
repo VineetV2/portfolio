@@ -38,13 +38,13 @@ source: #s02 | Selected Work, Fig. 1
 The thesis is in progress. Its code repository is not yet public.
 
 ## thesis-infrastructure
-source: Vineet_Vora.pdf | Résumé (PDF)
+source: https://vineetvora.dev/Vineet_Vora.pdf | Résumé (PDF)
 For the thesis, Vineet served 30B-parameter models on a 2×A100 SLURM cluster using
 vLLM. He built checkpoint/resume, per-question timeouts, and graceful degradation so
 that an eight-hour evaluation run never restarts from zero after a single failure.
 
 ## thesis-variant-cut
-source: Vineet_Vora.pdf | Résumé (PDF)
+source: https://vineetvora.dev/Vineet_Vora.pdf | Résumé (PDF)
 Vineet ran controlled comparisons across four open-source backbone models to isolate
 what actually moved accuracy on the thesis system. He also cut five
 candidate-selection variants down to one after measuring that the additional four
@@ -90,8 +90,21 @@ Code is at github.com/VineetV2/peon-mem.
 ## portfolio-site
 source: #s02 | Selected Work, Fig. 5
 This portfolio site itself is hand-written HTML, CSS, and JavaScript with no
-framework, no build step, and no dependencies beyond three typefaces. Built in 2026,
-deployed on Cloudflare Pages. Code is at github.com/VineetV2/portfolio.
+framework and no build step for the site itself, though the repository now carries
+dev dependencies for testing the Ask endpoint's Worker. Built in 2026, deployed on
+Cloudflare Workers with static assets. Code is at github.com/VineetV2/portfolio.
+
+## ask-endpoint
+source: #s00 | Ask
+The Ask box on this page is a Cloudflare Worker that calls Workers AI using
+open-source models. The entire hand-curated corpus is placed in the model's context
+on every request; the Worker deliberately does not use retrieval or a vector
+database, because the corpus is small enough to fit in one context window and
+retrieval would add failure modes without buying anything at this size. Citations
+the model returns are validated server-side against real block ids, so an invented
+citation cannot render. Questions about work authorisation, compensation, or
+opinions on his fit are intercepted and answered with a fixed refusal reply before
+the model is ever called.
 
 ## skills-languages-ml
 source: #s03 | Methods
@@ -152,7 +165,8 @@ CV is available as a PDF from the site.
 ## availability-status
 source: #cover | Cover
 Vineet is based in Newark, New Jersey. His MS in Artificial Intelligence at NJIT is
-expected in June 2027, and he is currently open to Forward Deployed Engineer roles.
+expected in June 2027, and he is currently open to Forward Deployed Engineer roles
+based in Newark NJ, in the New York metropolitan area, or remote.
 
 ## vitopia-scope
 source: https://www.linkedin.com/in/vineetv2 | LinkedIn

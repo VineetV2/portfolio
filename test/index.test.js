@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import worker, { buildAnswer, log } from '../worker/index.js'
+import { UNAVAILABLE_REPLY, INVALID_REPLY } from '../worker/prompt.js'
 
 const BLOCKS = [
   { id: 'thesis-accuracy', source: '#s02', sourceLabel: 'Fig. 1', body: '70.2% on BIRD.' }
@@ -85,5 +86,54 @@ describe('log', () => {
 
     expect(written).toEqual({ blobs: ['a question', 'answered'], indexes: ['answered'] })
     expect(waited).toBeInstanceOf(Promise)
+  })
+})
+
+describe('fetch: failure paths never produce a 500', () => {
+  // No ASK_LOG binding — log() must no-op rather than throw.
+  const stubEnv = () => ({
+    AI: { run: async () => { throw new Error('Workers AI is down') } },
+    ASSETS: { fetch: async () => new Response('asset', { status: 200 }) }
+  })
+  const ctx = () => ({ waitUntil: () => {} })
+
+  const post = body => new Request('http://example.com/api/ask', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body
+  })
+
+  it('returns the fixed fallback, never a 500, when env.AI.run throws', async () => {
+    const res = await worker.fetch(post(JSON.stringify({ question: 'What did the thesis achieve?' })), stubEnv(), ctx())
+    const body = await res.json()
+
+    expect(res.status).toBe(200)
+    expect(body.answer).toBe(UNAVAILABLE_REPLY)
+    expect(body.sources).toEqual([])
+  })
+
+  it('returns the invalid-input reply on malformed JSON', async () => {
+    const res = await worker.fetch(post('{not valid json'), stubEnv(), ctx())
+    const body = await res.json()
+
+    expect(res.status).toBe(200)
+    expect(body.answer).toBe(INVALID_REPLY)
+  })
+
+  it('returns the invalid-input reply when the question is over the length limit', async () => {
+    const res = await worker.fetch(post(JSON.stringify({ question: 'x'.repeat(501) })), stubEnv(), ctx())
+    const body = await res.json()
+
+    expect(res.status).toBe(200)
+    expect(body.answer).toBe(INVALID_REPLY)
+  })
+
+  it('returns 405 on GET', async () => {
+    const req = new Request('http://example.com/api/ask', { method: 'GET' })
+    const res = await worker.fetch(req, stubEnv(), ctx())
+    const body = await res.json()
+
+    expect(res.status).toBe(405)
+    expect(body.error).toBe('method not allowed')
   })
 })

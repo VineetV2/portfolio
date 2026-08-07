@@ -1,5 +1,8 @@
 import { describe, it, expect } from 'vitest'
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { parseCorpus, selectContext } from '../worker/corpus.js'
+import FACTS from '../corpus/facts.md'
 
 const SAMPLE = `## thesis-accuracy
 source: #s02 | Selected Work, Fig. 1
@@ -60,5 +63,30 @@ describe('selectContext', () => {
 
   it('is unaffected by the question', () => {
     expect(selectContext('', blocks)).toEqual(selectContext('xyz', blocks))
+  })
+})
+
+describe('real corpus invariants', () => {
+  // These two strings are meaningful to the response parser (worker/response.js):
+  // a body line starting "SOURCES:" would be mistaken for the model's own
+  // citation marker, and a bare NO_ANSWER token would be mistaken for the
+  // refusal sentinel. Both must never appear in hand-written corpus content —
+  // this locks the invariant in place instead of leaving it to discipline.
+  it('has no body line beginning "SOURCES:"', () => {
+    const offenders = FACTS.split('\n').filter(line => /^SOURCES:/.test(line))
+    expect(offenders).toEqual([])
+  })
+
+  it('has no bare NO_ANSWER token anywhere', () => {
+    expect(/\bNO_ANSWER\b/.test(FACTS)).toBe(false)
+  })
+
+  it("index.html's margin-note figures match what parseCorpus derives from the real corpus", () => {
+    const { stats } = parseCorpus(FACTS)
+    const htmlPath = fileURLToPath(new URL('../index.html', import.meta.url))
+    const html = readFileSync(htmlPath, 'utf8')
+
+    const expected = `${stats.blockCount} blocks · ~${stats.approxTokens.toLocaleString('en-US')} tokens`
+    expect(html).toContain(expected)
   })
 })

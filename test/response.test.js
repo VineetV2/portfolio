@@ -51,6 +51,32 @@ describe('parseSources', () => {
     expect(r.answer).toBe('Sources are limited for this claim.')
     expect(r.ids).toEqual([])
   })
+
+  it('strips brackets around a citation id', () => {
+    const r = parseSources('A.\nSOURCES: [thesis-accuracy]')
+    expect(r.ids).toEqual(['thesis-accuracy'])
+  })
+
+  it('strips quotes around a citation id', () => {
+    const r = parseSources('A.\nSOURCES: "thesis-accuracy"')
+    expect(r.ids).toEqual(['thesis-accuracy'])
+  })
+
+  it('strips a trailing period from a citation id', () => {
+    const r = parseSources('A.\nSOURCES: thesis-accuracy.')
+    expect(r.ids).toEqual(['thesis-accuracy'])
+  })
+
+  it('parses a newline-separated bullet list of citations', () => {
+    const r = parseSources('A.\nSOURCES:\n- thesis-accuracy')
+    expect(r.ids).toEqual(['thesis-accuracy'])
+  })
+
+  it('strips a dangling ** from a markdown-wrapped marker', () => {
+    const r = parseSources('The answer is here. **SOURCES:** thesis-accuracy')
+    expect(r.answer).toBe('The answer is here.')
+    expect(r.ids).toEqual(['thesis-accuracy'])
+  })
 })
 
 describe('validateCitations', () => {
@@ -80,5 +106,9 @@ describe('isRefusal', () => {
 
   it('does not fire on a normal answer', () => {
     expect(isRefusal('He has no answer to that in the notes.')).toBe(false)
+  })
+
+  it('treats a prose-prefixed sentinel as a refusal', () => {
+    expect(isRefusal('I could not find that. NO_ANSWER')).toBe(true)
   })
 })
