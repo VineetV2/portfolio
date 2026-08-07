@@ -5,6 +5,7 @@ node_modules
 docs
 worker
 test
+scripts
 og
 README.md
 package.json
