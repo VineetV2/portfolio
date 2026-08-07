@@ -1,0 +1,61 @@
+import { describe, it, expect } from 'vitest'
+import { parseSources, validateCitations, isRefusal } from '../worker/response.js'
+
+const BLOCKS = [
+  { id: 'thesis-accuracy', source: '#s02', sourceLabel: 'Fig. 1', body: 'x' },
+  { id: 'logistics-availability', source: null, sourceLabel: null, body: 'y' }
+]
+
+describe('parseSources', () => {
+  it('splits the answer from the SOURCES line', () => {
+    const r = parseSources('The answer.\n\nSOURCES: thesis-accuracy, logistics-availability')
+    expect(r.answer).toBe('The answer.')
+    expect(r.ids).toEqual(['thesis-accuracy', 'logistics-availability'])
+  })
+
+  it('returns the whole text and no ids when the line is missing', () => {
+    const r = parseSources('Just an answer.')
+    expect(r.answer).toBe('Just an answer.')
+    expect(r.ids).toEqual([])
+  })
+
+  it('deduplicates ids', () => {
+    const r = parseSources('A.\nSOURCES: a, a, b')
+    expect(r.ids).toEqual(['a', 'b'])
+  })
+
+  it('tolerates missing space and odd casing', () => {
+    const r = parseSources('A.\nsources:a,b')
+    expect(r.ids).toEqual(['a', 'b'])
+  })
+})
+
+describe('validateCitations', () => {
+  it('keeps ids that exist in the corpus', () => {
+    expect(validateCitations(['thesis-accuracy'], BLOCKS).map(b => b.id))
+      .toEqual(['thesis-accuracy'])
+  })
+
+  it('strips ids that do not exist', () => {
+    expect(validateCitations(['invented-block'], BLOCKS)).toEqual([])
+  })
+
+  it('handles an empty list', () => {
+    expect(validateCitations([], BLOCKS)).toEqual([])
+  })
+})
+
+describe('isRefusal', () => {
+  it('detects the sentinel', () => {
+    expect(isRefusal('NO_ANSWER')).toBe(true)
+    expect(isRefusal('  NO_ANSWER  ')).toBe(true)
+  })
+
+  it('detects the sentinel even when the model adds padding', () => {
+    expect(isRefusal('NO_ANSWER\n\nSOURCES:')).toBe(true)
+  })
+
+  it('does not fire on a normal answer', () => {
+    expect(isRefusal('He has no answer to that in the notes.')).toBe(false)
+  })
+})
