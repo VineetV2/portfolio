@@ -16,7 +16,8 @@ const DEFLECTIONS = [
     patterns: [
       /\bvisa\b/i, /\bsponsor(ship|ing|ed)?\b/i, /\bh-?1-?b\b/i, /\bopt\b/i,
       /\bcpt\b/i, /\bwork authoriz/i, /\bauthoriz(ed|ation) to work\b/i,
-      /\bgreen card\b/i, /\bcitizen(ship)?\b/i, /\bright to work\b/i
+      /\bgreen card\b/i, /\bcitizen(ship)?\b/i, /\bright to work\b/i,
+      /\bwork permit\b/i, /\beligible to work\b/i, /\blegally able to work\b/i
     ],
     reply: `Work authorisation is best discussed directly with Vineet — ${EMAIL}.`
   },
@@ -24,7 +25,9 @@ const DEFLECTIONS = [
     topic: 'compensation',
     patterns: [
       /\bsalary\b/i, /\bcompensation\b/i, /\bhow much (does|would|will) he\b/i,
-      /\bpay (range|expectation)/i, /\bexpected pay\b/i, /\brate\b/i, /\bctc\b/i
+      /\bpay (range|expectation)/i, /\bexpected pay\b/i,
+      /\bpay rate\b/i, /\bhourly rate\b/i, /\bday rate\b/i, /\brate expectation/i,
+      /\bctc\b/i
     ],
     reply: `Compensation is best discussed directly with Vineet — ${EMAIL}.`
   },
@@ -32,7 +35,9 @@ const DEFLECTIONS = [
     topic: 'fit',
     patterns: [
       /\bwould he be (good|great|a good fit)\b/i, /\bis he a good fit\b/i,
-      /\bdo you think he\b/i, /\bshould (we|i) hire\b/i, /\bis he right for\b/i
+      /\bdo you think he\b/i, /\bshould (we|i) hire\b/i, /\bis he right for\b/i,
+      /\bwould you hire\b/i, /\bdo you recommend\b/i, /\bstrong candidate\b/i,
+      /\bqualified for\b/i
     ],
     reply:
       "I won't give an opinion on fit — ask me what he's built and judge for yourself. " +

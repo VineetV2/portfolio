@@ -52,4 +52,23 @@ describe('matchDeflection', () => {
       expect(matchDeflection(q).reply.length).toBeGreaterThan(0)
     }
   })
+
+  it('does not deflect legitimate benchmark/evaluation "rate" questions', () => {
+    expect(matchDeflection('what was the execution accuracy rate?')).toBeNull()
+    expect(matchDeflection("what's the model's error rate?")).toBeNull()
+  })
+
+  it('still catches qualified compensation "rate" phrasing', () => {
+    expect(matchDeflection('what pay rate is he looking for?').topic).toBe('compensation')
+  })
+
+  it('catches additional work authorisation phrasings', () => {
+    expect(matchDeflection('does he need a work permit?').topic).toBe('authorization')
+    expect(matchDeflection('is he eligible to work in the US?').topic).toBe('authorization')
+  })
+
+  it('catches additional fit-opinion phrasings', () => {
+    expect(matchDeflection('would you hire him?').topic).toBe('fit')
+    expect(matchDeflection('do you recommend him?').topic).toBe('fit')
+  })
 })
