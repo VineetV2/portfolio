@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildAnswer, log } from '../worker/index.js'
+import worker, { buildAnswer, log } from '../worker/index.js'
 
 const BLOCKS = [
   { id: 'thesis-accuracy', source: '#s02', sourceLabel: 'Fig. 1', body: '70.2% on BIRD.' }
@@ -27,6 +27,27 @@ describe('buildAnswer', () => {
     const r = buildAnswer('A bare answer.', BLOCKS)
     expect(r.answer).toBe('A bare answer.')
     expect(r.sources).toEqual([])
+  })
+})
+
+describe('fetch: deflection response envelope', () => {
+  it('carries the deflected topic in meta alongside blockCount/approxTokens', async () => {
+    const request = new Request('http://example.com/api/ask', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ question: 'What salary is he looking for?' })
+    })
+    const env = {}
+    const ctx = { waitUntil: () => {} }
+
+    const res = await worker.fetch(request, env, ctx)
+    const body = await res.json()
+
+    expect(body.meta.deflected).toBe('compensation')
+    expect(typeof body.meta.blockCount).toBe('number')
+    expect(body.meta.blockCount).toBeGreaterThan(0)
+    expect(typeof body.meta.approxTokens).toBe('number')
+    expect(body.meta.approxTokens).toBeGreaterThan(0)
   })
 })
 

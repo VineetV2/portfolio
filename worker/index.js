@@ -52,7 +52,7 @@ export default {
     const deflection = matchDeflection(question)
     if (deflection) {
       log(env, ctx, question, `deflected:${deflection.topic}`)
-      return json({ answer: deflection.reply, sources: [], meta: meta() })
+      return json({ answer: deflection.reply, sources: [], meta: { ...meta(), deflected: deflection.topic } })
     }
 
     let raw
