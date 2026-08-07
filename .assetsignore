@@ -1,0 +1,12 @@
+node_modules
+.git
+.wrangler
+.superpowers
+docs
+worker
+test
+package.json
+package-lock.json
+wrangler.jsonc
+.assetsignore
+.gitignore
