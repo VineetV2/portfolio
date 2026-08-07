@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { parseCorpus } from '../worker/corpus.js'
+import { parseCorpus, selectContext } from '../worker/corpus.js'
 
 const SAMPLE = `## thesis-accuracy
 source: #s02 | Selected Work, Fig. 1
@@ -45,5 +45,20 @@ describe('parseCorpus', () => {
 
   it('throws on an empty block body', () => {
     expect(() => parseCorpus('## a\nsource: #x | X\n')).toThrow(/empty/i)
+  })
+})
+
+describe('selectContext', () => {
+  const blocks = [
+    { id: 'a', source: null, sourceLabel: null, body: 'one' },
+    { id: 'b', source: null, sourceLabel: null, body: 'two' }
+  ]
+
+  it('returns every block — the corpus fits in context, so there is no retrieval', () => {
+    expect(selectContext('anything at all', blocks)).toEqual(blocks)
+  })
+
+  it('is unaffected by the question', () => {
+    expect(selectContext('', blocks)).toEqual(selectContext('xyz', blocks))
   })
 })

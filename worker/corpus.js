@@ -51,3 +51,16 @@ export function parseCorpus(text) {
     }
   }
 }
+
+/**
+ * The retrieval seam.
+ *
+ * The corpus fits in one context window, so today this returns everything and
+ * the system never retrieves. That removes the most common RAG failure mode —
+ * the right answer sitting in a chunk that was not pulled.
+ *
+ * If the corpus ever outgrows the window, this is the only function that changes.
+ */
+export function selectContext(question, blocks) {
+  return blocks
+}
