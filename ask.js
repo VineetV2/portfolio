@@ -9,6 +9,7 @@
   var out = document.getElementById('askAnswer')
   var starters = document.getElementById('askStarters')
   var statsEl = document.getElementById('askStats')
+  var pending = false
 
   function render(nodes) {
     out.textContent = ''
@@ -28,11 +29,13 @@
     p.appendChild(document.createTextNode('Sources: '))
     sources.forEach(function (s, i) {
       if (i) p.appendChild(document.createTextNode(' · '))
-      if (s.source) {
+      var isAnchor = typeof s.source === 'string' && /^#/.test(s.source)
+      var isHttp = typeof s.source === 'string' && /^https?:\/\//.test(s.source)
+      if (isAnchor || isHttp) {
         var a = document.createElement('a')
         a.href = s.source
         a.textContent = s.sourceLabel || s.id
-        if (/^https?:/.test(s.source)) { a.target = '_blank'; a.rel = 'noopener' }
+        if (isHttp) { a.target = '_blank'; a.rel = 'noopener' }
         p.appendChild(a)
       } else {
         p.appendChild(document.createTextNode(s.sourceLabel || s.id))
@@ -41,8 +44,14 @@
     return p
   }
 
+  function fallback() {
+    render([para('Could not reach the assistant. Vineet\'s email is in § 06.')])
+  }
+
   function ask(question) {
     if (!question.trim()) return
+    if (pending) return
+    pending = true
     button.disabled = true
     render([para('reading the dossier…', 'ask-pending')])
 
@@ -51,8 +60,17 @@
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ question: question })
     })
-      .then(function (r) { return r.json() })
-      .then(function (data) {
+      .then(function (r) {
+        return r.json().then(function (data) {
+          return { ok: r.ok, data: data }
+        })
+      })
+      .then(function (result) {
+        var data = result.data
+        if (!result.ok || !data || typeof data.answer !== 'string') {
+          fallback()
+          return
+        }
         var nodes = [para(data.answer)]
         if (data.sources && data.sources.length) nodes.push(sourceLine(data.sources))
         render(nodes)
@@ -63,9 +81,12 @@
         }
       })
       .catch(function () {
-        render([para('Could not reach the assistant. Vineet\'s email is in § 06.')])
+        fallback()
       })
-      .finally(function () { button.disabled = false })
+      .finally(function () {
+        pending = false
+        button.disabled = false
+      })
   }
 
   form.addEventListener('submit', function (e) {
