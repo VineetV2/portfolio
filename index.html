@@ -460,7 +460,15 @@
   <div class="askw-panel" id="askwPanel" role="dialog" aria-label="Ask about Vineet" hidden>
     <div class="askw-head">
       <p class="askw-kicker" aria-hidden="true">Fig. 0 · Ask</p>
-      <button class="askw-close" id="askwClose" aria-label="Close">&#215;</button>
+      <div class="askw-head-actions">
+        <button class="askw-voice" id="askwVoice" aria-pressed="false" aria-label="Read answers aloud">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5H4z"/>
+            <path class="askw-voice-waves" d="M15.5 9.2 a4.4 4.4 0 0 1 0 5.6 M18 7 a8 8 0 0 1 0 10"/>
+          </svg>
+        </button>
+        <button class="askw-close" id="askwClose" aria-label="Close">&#215;</button>
+      </div>
     </div>
 
     <p class="askw-standfirst">Ask this dossier a question. Answers come only from
@@ -471,6 +479,13 @@
       <input class="ask-input" id="askInput" name="question" type="text"
              maxlength="500" autocomplete="off"
              placeholder="What did the thesis actually achieve?">
+      <button class="askw-mic" id="askMic" type="button" aria-pressed="false"
+              aria-label="Ask by voice" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+          <rect x="9" y="3" width="6" height="11" rx="3"/>
+          <path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3.5"/>
+        </svg>
+      </button>
       <button class="ask-send" type="submit">Ask</button>
     </form>
 
@@ -493,7 +508,17 @@
   </div>
 
   <button class="askw-launcher" id="askwLauncher" aria-expanded="false" aria-controls="askwPanel">
-    <span class="askw-dot" aria-hidden="true"></span>Ask
+    <span class="askw-avatar-wrap" aria-hidden="true">
+      <svg class="askw-rocket" viewBox="0 0 24 40" fill="none">
+        <path d="M12 2 C16.5 8 16.5 18 12 27 C7.5 18 7.5 8 12 2 Z" fill="currentColor"/>
+        <circle cx="12" cy="11" r="2.6" class="askw-rocket-window"/>
+        <path d="M8.6 20 L4.5 27 L9.5 25 Z" fill="currentColor"/>
+        <path d="M15.4 20 L19.5 27 L14.5 25 Z" fill="currentColor"/>
+        <path class="askw-rocket-flame" d="M12 28 C14 31 13.5 34.5 12 38 C10.5 34.5 10 31 12 28 Z"/>
+      </svg>
+      <img class="askw-avatar" src="vineet.jpeg" alt="" width="72" height="96">
+    </span>
+    <span class="askw-label">Ask</span>
   </button>
 </div>
 <noscript><style>.askw { display: none; }</style></noscript>

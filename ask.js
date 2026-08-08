@@ -16,6 +16,8 @@
   var teaser = document.getElementById('askwTeaser')
   var teaserText = document.getElementById('askwTeaserText')
   var teaserClose = document.getElementById('askwTeaserClose')
+  var voiceBtn = document.getElementById('askwVoice')
+  var micBtn = document.getElementById('askMic')
 
   var pending = false
 
@@ -90,6 +92,7 @@
         var nodes = [para(data.answer)]
         if (data.sources && data.sources.length) nodes.push(sourceLine(data.sources))
         render(nodes)
+        speak(data.answer)
       })
       .catch(function () {
         fallback()
@@ -134,6 +137,7 @@
   function closePanel() {
     panel.hidden = true
     launcher.setAttribute('aria-expanded', 'false')
+    stopSpeaking()
     launcher.focus()
   }
 
@@ -195,6 +199,91 @@
     }
     openPanel()
   })
+
+  /* ── entrance: rocket flies the avatar in once, then docks ─────── */
+
+  var reducedMotion = window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+  if (!reducedMotion) {
+    launcher.classList.add('askw-fly')
+    launcher.addEventListener('animationend', function onFly(e) {
+      if (e.animationName !== 'askw-flight') return
+      launcher.classList.remove('askw-fly')
+      launcher.removeEventListener('animationend', onFly)
+    })
+  }
+
+  /* ── voice out: browser speech synthesis, off by default ───────── */
+
+  var canSpeak = 'speechSynthesis' in window
+  var speakOn = canSpeak && recall('askwSpeak') === '1'
+
+  function reflectVoice() {
+    voiceBtn.setAttribute('aria-pressed', speakOn ? 'true' : 'false')
+  }
+
+  function stopSpeaking() {
+    if (canSpeak) { try { speechSynthesis.cancel() } catch (e) {} }
+  }
+
+  function speak(text) {
+    if (!speakOn || !canSpeak) return
+    try {
+      speechSynthesis.cancel()
+      var u = new SpeechSynthesisUtterance(text)
+      u.rate = 1
+      speechSynthesis.speak(u)
+    } catch (e) {}
+  }
+
+  if (!canSpeak) {
+    voiceBtn.hidden = true
+  } else {
+    reflectVoice()
+    voiceBtn.addEventListener('click', function () {
+      speakOn = !speakOn
+      remember('askwSpeak', speakOn ? '1' : '0')
+      if (!speakOn) stopSpeaking()
+      reflectVoice()
+    })
+  }
+
+  /* ── voice in: browser speech recognition where it exists ──────── */
+
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition
+  var rec = null
+  var listening = false
+
+  function resetMic() {
+    listening = false
+    micBtn.setAttribute('aria-pressed', 'false')
+  }
+
+  if (SR) {
+    micBtn.hidden = false
+    micBtn.addEventListener('click', function () {
+      if (listening) {
+        try { rec.stop() } catch (e) {}
+        resetMic()
+        return
+      }
+      rec = new SR()
+      rec.lang = 'en-US'
+      rec.interimResults = false
+      rec.maxAlternatives = 1
+      rec.onresult = function (e) {
+        var t = e.results[0][0].transcript
+        input.value = t
+        ask(t)
+      }
+      rec.onend = resetMic
+      rec.onerror = resetMic
+      listening = true
+      micBtn.setAttribute('aria-pressed', 'true')
+      try { rec.start() } catch (e) { resetMic() }
+    })
+  }
 
   if ('IntersectionObserver' in window) {
     var seen = {}
