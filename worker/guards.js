@@ -32,6 +32,17 @@ const DEFLECTIONS = [
     reply: `Compensation is best discussed directly with Vineet — ${EMAIL}.`
   },
   {
+    topic: 'hypothetical',
+    patterns: [
+      /\bpretend\b/i, /\bimagine (that|the|he)\b/i, /\bsuppose (that|the|he)\b/i,
+      /\bhypothetical(ly)?\b/i, /\bact as if\b/i, /\bassume (that|the|he)\b/i,
+      /\brole.?play\b/i, /\bwhat if (the notes|he had)\b/i
+    ],
+    reply:
+      "I only answer from Vineet's actual notes — I won't play out hypotheticals " +
+      'about him. Ask me something real, or email him at ' + EMAIL + '.'
+  },
+  {
     topic: 'fit',
     patterns: [
       /\bwould he be (good|great|a good fit)\b/i, /\bis he a good fit\b/i,
@@ -60,4 +71,24 @@ export function matchDeflection(question) {
     }
   }
   return null
+}
+
+/**
+ * Multi-turn history arrives from the client and is attacker-controlled.
+ * Sanitize hard: cap the number of turns and each turn's length, accept
+ * only the two roles the prompt understands, and coerce everything else
+ * to "no history". A malformed history must degrade to a single-turn
+ * question, never to an error.
+ */
+export const MAX_HISTORY_TURNS = 6
+export const MAX_HISTORY_CHARS = 600
+
+export function sanitizeHistory(raw) {
+  if (!Array.isArray(raw)) return []
+  return raw
+    .filter(h => h && typeof h === 'object' &&
+      (h.role === 'user' || h.role === 'assistant') &&
+      typeof h.content === 'string' && h.content.trim() !== '')
+    .slice(-MAX_HISTORY_TURNS)
+    .map(h => ({ role: h.role, content: h.content.slice(0, MAX_HISTORY_CHARS) }))
 }

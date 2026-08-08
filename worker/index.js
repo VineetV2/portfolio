@@ -1,6 +1,6 @@
 import { parseCorpus, selectContext } from './corpus.js'
 import { parseSources, validateCitations, isRefusal } from './response.js'
-import { checkInput, matchDeflection } from './guards.js'
+import { checkInput, matchDeflection, sanitizeHistory } from './guards.js'
 import { buildMessages, REFUSAL_REPLY, UNAVAILABLE_REPLY, INVALID_REPLY } from './prompt.js'
 import FACTS from '../corpus/facts.md'
 
@@ -23,6 +23,11 @@ const json = (body, status = 200) =>
 export function buildAnswer(raw, corpusBlocks) {
   if (isRefusal(raw)) return { answer: REFUSAL_REPLY, sources: [] }
 
+  // "NOTES" is prompt-internal vocabulary. If it surfaces in an answer the
+  // model is describing its own instructions ("no mention of X in the NOTES")
+  // rather than answering — substitute the fixed refusal instead of leaking it.
+  if (/\bNOTES\b/.test(raw)) return { answer: REFUSAL_REPLY, sources: [] }
+
   const { answer, ids } = parseSources(raw)
   const sources = validateCitations(ids, corpusBlocks)
     .map(b => ({ id: b.id, source: b.source, sourceLabel: b.sourceLabel }))
@@ -38,9 +43,9 @@ export default {
     if (url.pathname !== '/api/ask') return env.ASSETS.fetch(request)
     if (request.method !== 'POST') return json({ error: 'method not allowed' }, 405)
 
-    let question
+    let question, history
     try {
-      ({ question } = await request.json())
+      ({ question, history } = await request.json())
     } catch {
       return json({ answer: INVALID_REPLY, sources: [], meta: meta() })
     }
@@ -58,7 +63,7 @@ export default {
     let raw
     try {
       const result = await env.AI.run(MODEL, {
-        messages: buildMessages(question, selectContext(question, blocks)),
+        messages: buildMessages(question, selectContext(question, blocks), sanitizeHistory(history)),
         max_tokens: 400,
         temperature: 0.1
       })

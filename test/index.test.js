@@ -7,6 +7,18 @@ const BLOCKS = [
 ]
 
 describe('buildAnswer', () => {
+  it('substitutes the refusal when the internal NOTES vocabulary leaks', () => {
+    const r = buildAnswer('There is no mention of that in the NOTES.', [])
+    expect(r.answer).toContain('vineet.vora123@gmail.com')
+    expect(r.sources).toEqual([])
+  })
+
+  it('does not fire on the ordinary word notes', () => {
+    const r = buildAnswer("Vineet's notes describe the thesis.", [])
+    expect(r.answer).toBe("Vineet's notes describe the thesis.")
+  })
+
+
   it('returns prose and validated sources', () => {
     const r = buildAnswer('It reaches 70.2%.\n\nSOURCES: thesis-accuracy', BLOCKS)
     expect(r.answer).toBe('It reaches 70.2%.')

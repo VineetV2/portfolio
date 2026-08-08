@@ -18,8 +18,9 @@ source: #s02 | Selected Work, Fig. 1
 Vineet's master's thesis at NJIT (Jan 2026 – present) turns plain-English business
 questions into working SQL against enterprise databases the model has never seen.
 The pipeline has five stages: schema linking, candidate generation, targeted
-decomposition, self-repair, and a consensus vote across candidates. The stack is
-Python, vLLM, PyTorch, Qwen3-Coder-30B, SLURM, and SQLite.
+decomposition, self-repair, and a consensus vote across candidates. The backbone
+model is Qwen3-Coder-30B, an open-source model. The stack is Python, vLLM,
+PyTorch, SLURM, and SQLite.
 
 ## thesis-accuracy
 source: #s02 | Selected Work, Fig. 1

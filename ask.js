@@ -20,18 +20,70 @@
   var micBtn = document.getElementById('askMic')
 
   var pending = false
+  var history = []                  // this conversation, oldest first
+  var HISTORY_SENT = 6              // how many turns ride along per request
 
-  /* ── answer rendering (unchanged pipeline: textContent only) ───── */
+  /* ── transcript rendering (textContent only, always) ───────────── */
 
-  function render(nodes) {
-    out.textContent = ''
-    nodes.forEach(function (n) { out.appendChild(n) })
+  function addTurn(nodes) {
+    var wrap = document.createElement('div')
+    wrap.className = 'ask-turn'
+    nodes.forEach(function (n) { wrap.appendChild(n) })
+    out.appendChild(wrap)
+    out.scrollTop = out.scrollHeight
+    return wrap
   }
 
   function para(text, cls) {
     var p = document.createElement('p')
     if (cls) p.className = cls
     p.textContent = text            // never innerHTML
+    return p
+  }
+
+  /* Linkify ONLY Vineet's own destinations inside answer text. The answer is
+     model output, so generic URL linkification would let an injected reply
+     render a clickable link to anywhere. Every pattern is anchored to a known
+     host, and the href is rebuilt from the anchored match — text that doesn't
+     match an allowlisted shape stays plain text. Still no innerHTML. */
+  var LINKABLE = [
+    { re: /vineet\.vora123@gmail\.com/,
+      href: function () { return 'mailto:vineet.vora123@gmail.com' }, ext: false },
+    { re: /(?:https?:\/\/)?(?:www\.)?linkedin\.com\/in\/vineetv2\/?/,
+      href: function () { return 'https://www.linkedin.com/in/vineetv2' }, ext: true },
+    { re: /(?:https?:\/\/)?github\.com\/VineetV2(?:\/[A-Za-z0-9._-]+)?/,
+      href: function (m) { return 'https://' + m.replace(/^https?:\/\//, '') }, ext: true },
+    { re: /(?:https?:\/\/)?ieeexplore\.ieee\.org\/document\/11380637/,
+      href: function () { return 'https://ieeexplore.ieee.org/document/11380637' }, ext: true },
+    { re: /(?:https?:\/\/)?vineetvora\.dev(?:\/[A-Za-z0-9._-]*)?/,
+      href: function (m) { return 'https://' + m.replace(/^https?:\/\//, '') }, ext: true }
+  ]
+
+  function answerPara(text) {
+    var p = document.createElement('p')
+    var rest = text
+    while (rest.length) {
+      var best = null
+      for (var i = 0; i < LINKABLE.length; i++) {
+        var m = rest.match(LINKABLE[i].re)
+        if (m && (best === null || m.index < best.index)) {
+          best = { index: m.index, text: m[0], rule: LINKABLE[i] }
+        }
+      }
+      if (!best) {
+        p.appendChild(document.createTextNode(rest))
+        break
+      }
+      if (best.index > 0) {
+        p.appendChild(document.createTextNode(rest.slice(0, best.index)))
+      }
+      var a = document.createElement('a')
+      a.href = best.rule.href(best.text)
+      a.textContent = best.text
+      if (best.rule.ext) { a.target = '_blank'; a.rel = 'noopener' }
+      p.appendChild(a)
+      rest = rest.slice(best.index + best.text.length)
+    }
     return p
   }
 
@@ -56,21 +108,26 @@
     return p
   }
 
-  function fallback() {
-    render([para('Could not reach the assistant. Vineet\'s email is in § 06.')])
-  }
-
   function ask(question) {
     if (!question.trim()) return
     if (pending) return
     pending = true
     button.disabled = true
-    render([para('reading the dossier…', 'ask-pending')])
+    starters.hidden = true
+    input.value = ''
+
+    addTurn([para(question, 'ask-q')])
+    var pendingTurn = addTurn([para('reading the dossier…', 'ask-pending')])
+
+    function fallback() {
+      pendingTurn.remove()
+      addTurn([para('Could not reach the assistant. Vineet\'s email is in § 06.')])
+    }
 
     fetch('/api/ask', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ question: question })
+      body: JSON.stringify({ question: question, history: history.slice(-HISTORY_SENT) })
     })
       .then(function (r) {
         return r.json().then(function (data) {
@@ -89,9 +146,12 @@
             data.meta.blockCount + ' blocks · ~' +
             data.meta.approxTokens.toLocaleString() + ' tokens'
         }
-        var nodes = [para(data.answer)]
+        pendingTurn.remove()
+        var nodes = [answerPara(data.answer)]
         if (data.sources && data.sources.length) nodes.push(sourceLine(data.sources))
-        render(nodes)
+        addTurn(nodes)
+        history.push({ role: 'user', content: question })
+        history.push({ role: 'assistant', content: data.answer })
         speak(data.answer)
       })
       .catch(function () {
