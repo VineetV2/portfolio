@@ -474,6 +474,15 @@
     <p class="askw-standfirst">Ask this dossier a question. Answers come only from
       Vineet's notes, with links to the source where it cites one.</p>
 
+    <div class="ask-answer" id="askAnswer" aria-live="polite"></div>
+
+    <ul class="ask-starters" id="askStarters">
+      <li><button type="button">What did the thesis actually achieve?</button></li>
+      <li><button type="button">Has he worked with distributed systems?</button></li>
+      <li><button type="button">What has he cut from a project, and why?</button></li>
+      <li><button type="button">Is he available, and where?</button></li>
+    </ul>
+
     <form class="ask-form" id="askForm">
       <label class="vh" for="askInput">Your question</label>
       <input class="ask-input" id="askInput" name="question" type="text"
@@ -488,15 +497,6 @@
       </button>
       <button class="ask-send" type="submit">Ask</button>
     </form>
-
-    <ul class="ask-starters" id="askStarters">
-      <li><button type="button">What did the thesis actually achieve?</button></li>
-      <li><button type="button">Has he worked with distributed systems?</button></li>
-      <li><button type="button">What has he cut from a project, and why?</button></li>
-      <li><button type="button">Is he available, and where?</button></li>
-    </ul>
-
-    <div class="ask-answer" id="askAnswer" aria-live="polite"></div>
 
     <p class="askw-foot"><span id="askStats">30 blocks · ~2,020 tokens</span> in context
       &#183; no retrieval &#8212; the corpus fits</p>

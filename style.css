@@ -665,13 +665,16 @@ table { border-collapse: collapse; width: 100%; }
 .ask-answer p {
   font-size: 0.98rem; line-height: 1.6; color: var(--ink);
 }
-.ask-turn { margin-top: 0.9rem; }
+.ask-turn { margin-top: 0.9rem; display: flex; flex-direction: column; align-items: flex-start; }
 .ask-turn:first-child { margin-top: 0.5rem; }
-.ask-turn .ask-q {
-  font-family: var(--mono); font-size: 0.78rem; color: var(--ink-3);
-  letter-spacing: 0.02em;
+.ask-turn.ask-bot { max-width: 94%; }
+.ask-turn.ask-user { align-items: flex-end; }
+.ask-turn.ask-user .ask-q {
+  font-family: var(--mono); font-size: 0.8rem; color: var(--ink-2);
+  letter-spacing: 0.02em; text-align: left; max-width: 88%;
+  background: var(--accent-w); border: 1px solid var(--rule);
+  padding: 0.45rem 0.85rem;
 }
-.ask-turn .ask-q::before { content: '\2192\00a0'; color: var(--accent); }
 .ask-answer .ask-pending { font-family: var(--mono); font-size: 0.85rem; color: var(--ink-3); }
 .ask-answer .ask-src { font-family: var(--mono); font-size: 0.78rem; margin-top: 1rem; }
 .ask-answer .ask-src a { color: var(--accent); border-bottom: 1px solid transparent; }

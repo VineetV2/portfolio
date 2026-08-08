@@ -25,9 +25,9 @@
 
   /* ── transcript rendering (textContent only, always) ───────────── */
 
-  function addTurn(nodes) {
+  function addTurn(nodes, who) {
     var wrap = document.createElement('div')
-    wrap.className = 'ask-turn'
+    wrap.className = 'ask-turn' + (who ? ' ask-' + who : '')
     nodes.forEach(function (n) { wrap.appendChild(n) })
     out.appendChild(wrap)
     out.scrollTop = out.scrollHeight
@@ -116,12 +116,12 @@
     starters.hidden = true
     input.value = ''
 
-    addTurn([para(question, 'ask-q')])
-    var pendingTurn = addTurn([para('reading the dossier…', 'ask-pending')])
+    addTurn([para(question, 'ask-q')], 'user')
+    var pendingTurn = addTurn([para('reading the dossier…', 'ask-pending')], 'bot')
 
     function fallback() {
       pendingTurn.remove()
-      addTurn([para('Could not reach the assistant. Vineet\'s email is in § 06.')])
+      addTurn([para('Could not reach the assistant. Vineet\'s email is in § 06.')], 'bot')
     }
 
     fetch('/api/ask', {
@@ -149,7 +149,7 @@
         pendingTurn.remove()
         var nodes = [answerPara(data.answer)]
         if (data.sources && data.sources.length) nodes.push(sourceLine(data.sources))
-        addTurn(nodes)
+        addTurn(nodes, 'bot')
         history.push({ role: 'user', content: question })
         history.push({ role: 'assistant', content: data.answer })
         speak(data.answer)
