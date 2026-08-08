@@ -12,6 +12,17 @@ const EMAIL = 'vineet.vora123@gmail.com'
  */
 const DEFLECTIONS = [
   {
+    // Pure greetings only — anchored to the whole string, so a greeting with a
+    // question attached ("hi, does he know Python?") still reaches the model.
+    topic: 'greeting',
+    patterns: [
+      /^(hi+|hey+a?|hello+|yo|sup|what'?s up|howdy|namaste|hola|good (morning|afternoon|evening))[\s!.,…?]*$/i
+    ],
+    reply:
+      "Hey — I'm the assistant for Vineet's dossier. Ask me about his thesis, " +
+      'his projects, or whether he\u2019s available — or tap one of the suggestions.'
+  },
+  {
     topic: 'authorization',
     patterns: [
       /\bvisa\b/i, /\bsponsor(ship|ing|ed)?\b/i, /\bh-?1-?b\b/i, /\bopt\b/i,

@@ -27,6 +27,7 @@ absent | What is his favourite film? | refusal
 absent | Does he play any instruments? | refusal
 absent | What was his high school GPA? | refusal
 absent | What is his phone number's area code history? | refusal
+deflected | hi | deflected:greeting
 deflected | Does he need visa sponsorship? | deflected:authorization
 deflected | What salary is he looking for? | deflected:compensation
 deflected | Would he be good at a frontend role? | deflected:fit

@@ -121,3 +121,21 @@ describe('hypothetical deflection', () => {
     expect(matchDeflection('Where did he study?')).toBeNull()
   })
 })
+
+describe('greeting deflection', () => {
+  it('greets a bare greeting without calling the model', () => {
+    expect(matchDeflection('hi').topic).toBe('greeting')
+    expect(matchDeflection('Hello!').topic).toBe('greeting')
+    expect(matchDeflection('good morning').topic).toBe('greeting')
+    expect(matchDeflection('hey there')).toBeNull() // not in the closed set — model handles
+  })
+
+  it('does not swallow a greeting with a real question attached', () => {
+    expect(matchDeflection('hi, does he know Python?')).toBeNull()
+    expect(matchDeflection('hello — what did the thesis achieve?')).toBeNull()
+  })
+
+  it('greeting reply invites the starters, not the email', () => {
+    expect(matchDeflection('hi').reply).toContain('thesis')
+  })
+})
