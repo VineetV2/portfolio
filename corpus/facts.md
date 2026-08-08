@@ -119,7 +119,7 @@ CUDA. Databases: PostgreSQL, MySQL, MongoDB, SQLite.
 
 ## skills-web-delivery
 source: #s03 | Methods
-Web tools: React, Node.js, Cloudflare Pages. Delivery skills: requirements scoping,
+Web tools: React, Node.js, Cloudflare Workers. Delivery skills: requirements scoping,
 Design Thinking (IBM), technical writing, Git, CI/CD.
 
 ## publication-overview
