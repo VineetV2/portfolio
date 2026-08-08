@@ -9,7 +9,17 @@
   var out = document.getElementById('askAnswer')
   var starters = document.getElementById('askStarters')
   var statsEl = document.getElementById('askStats')
+
+  var panel = document.getElementById('askwPanel')
+  var launcher = document.getElementById('askwLauncher')
+  var closeBtn = document.getElementById('askwClose')
+  var teaser = document.getElementById('askwTeaser')
+  var teaserText = document.getElementById('askwTeaserText')
+  var teaserClose = document.getElementById('askwTeaserClose')
+
   var pending = false
+
+  /* ── answer rendering (unchanged pipeline: textContent only) ───── */
 
   function render(nodes) {
     out.textContent = ''
@@ -101,4 +111,106 @@
     input.value = b.textContent
     ask(b.textContent)
   })
+
+  /* ── session memory (best-effort; private mode must not break us) ─ */
+
+  function remember(key, value) {
+    try { sessionStorage.setItem(key, value) } catch (e) {}
+  }
+  function recall(key) {
+    try { return sessionStorage.getItem(key) } catch (e) { return null }
+  }
+
+  /* ── panel open / close ────────────────────────────────────────── */
+
+  function openPanel() {
+    hideTeaser()
+    muteTeasers()                   // once they've found the panel, stop nudging
+    panel.hidden = false
+    launcher.setAttribute('aria-expanded', 'true')
+    input.focus()
+  }
+
+  function closePanel() {
+    panel.hidden = true
+    launcher.setAttribute('aria-expanded', 'false')
+    launcher.focus()
+  }
+
+  launcher.addEventListener('click', function () {
+    if (panel.hidden) openPanel()
+    else closePanel()
+  })
+
+  closeBtn.addEventListener('click', closePanel)
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !panel.hidden) closePanel()
+  })
+
+  /* ── proactive teasers ─────────────────────────────────────────────
+     A small nudge tied to what the visitor is reading. Deliberately shy:
+     at most TEASER_CAP per visit, one at a time, auto-hides, and goes
+     quiet permanently (for the session) once dismissed or once the panel
+     has been opened. An assistant that keeps tapping your shoulder is
+     worse than none. */
+
+  var TEASERS = {
+    s01: 'Want the short version? I can answer questions about Vineet.',
+    s02: 'Curious about the thesis? Ask me what it actually achieved.',
+    s04: 'I can tell you more about the wildfire paper — just ask.',
+    s06: 'Anything unanswered? Ask here, or use the email below.'
+  }
+  var TEASER_CAP = 2
+  var FIRST_TEASER_DELAY = 5000
+  var TEASER_LIFETIME = 9000
+
+  var teaserTimer = null
+  var shownCount = 0
+  var pageLoadedAt = Date.now()
+
+  function teasersMuted() { return recall('askwMuted') === '1' }
+  function muteTeasers() { remember('askwMuted', '1') }
+
+  function hideTeaser() {
+    teaser.hidden = true
+    if (teaserTimer) { clearTimeout(teaserTimer); teaserTimer = null }
+  }
+
+  function showTeaser(text) {
+    if (teasersMuted() || !panel.hidden) return
+    if (shownCount >= TEASER_CAP) return
+    if (Date.now() - pageLoadedAt < FIRST_TEASER_DELAY) return
+    shownCount += 1
+    teaserText.textContent = text   // never innerHTML
+    teaser.hidden = false
+    teaserTimer = setTimeout(hideTeaser, TEASER_LIFETIME)
+  }
+
+  teaser.addEventListener('click', function (e) {
+    if (e.target.closest('#askwTeaserClose')) {
+      hideTeaser()
+      muteTeasers()
+      return
+    }
+    openPanel()
+  })
+
+  if ('IntersectionObserver' in window) {
+    var seen = {}
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return
+        var id = entry.target.id
+        if (seen[id] || !TEASERS[id]) return
+        seen[id] = true
+        showTeaser(TEASERS[id])
+      })
+    }, { rootMargin: '0px 0px -40% 0px', threshold: 0.2 })
+
+    Object.keys(TEASERS).forEach(function (id) {
+      var el = document.getElementById(id)
+      if (el) io.observe(el)
+    })
+  }
 })()

@@ -55,14 +55,13 @@
 </head>
 <body>
 
-<a href="#s00" class="skip-link">Skip to content</a>
+<a href="#s01" class="skip-link">Skip to content</a>
 
 <!-- ══ MASTHEAD ══════════════════════════════════════════════════ -->
 <header class="masthead">
   <div class="mh-inner">
     <a href="#cover" class="mh-name">Vineet&nbsp;Vora</a>
     <nav class="mh-nav" aria-label="Sections">
-      <a href="#s00" data-nav="s00"><i aria-hidden="true">00</i>Ask</a>
       <a href="#s01" data-nav="s01"><i aria-hidden="true">01</i>Abstract</a>
       <a href="#s02" data-nav="s02"><i aria-hidden="true">02</i>Work</a>
       <a href="#s03" data-nav="s03"><i aria-hidden="true">03</i>Methods</a>
@@ -84,7 +83,6 @@
 </header>
 
 <nav class="drawer" id="drawer" aria-label="Mobile navigation">
-  <a href="#s00"><i aria-hidden="true">00</i>Ask</a>
   <a href="#s01"><i aria-hidden="true">01</i>Abstract</a>
   <a href="#s02"><i aria-hidden="true">02</i>Work</a>
   <a href="#s03"><i aria-hidden="true">03</i>Methods</a>
@@ -129,58 +127,6 @@
       <a href="mailto:vineet.vora123@gmail.com" class="lnk">Get in touch</a>
     </div>
 
-  </div>
-</section>
-
-<!-- ══ 00 ASK ════════════════════════════════════════════════════ -->
-<section class="sec" id="s00">
-  <div class="sheet">
-    <div class="sec-head">
-      <p class="sec-num" aria-hidden="true">§ 00</p>
-      <h2 class="sec-title">Ask</h2>
-    </div>
-
-    <div class="grid-2">
-      <aside class="rail">
-        <p class="fig-n" aria-hidden="true">Fig. 0</p>
-        <dl class="fig-meta">
-          <div><dt>Corpus</dt><dd id="askStats">30 blocks · ~2,009 tokens</dd></div>
-          <div><dt>Retrieval</dt><dd>None</dd></div>
-        </dl>
-        <p class="note ask-note">
-          The corpus is small enough to fit in one context window, so this doesn't
-          retrieve. Retrieval would add failure modes and buy nothing at this size.
-        </p>
-      </aside>
-
-      <div class="col">
-        <p class="standfirst">Ask this dossier a question. Answers come only from
-          Vineet's notes, with links to the source where it cites one.</p>
-
-        <form class="ask-form" id="askForm">
-          <label class="vh" for="askInput">Your question</label>
-          <input class="ask-input" id="askInput" name="question" type="text"
-                 maxlength="500" autocomplete="off"
-                 placeholder="What did the thesis actually achieve?">
-          <button class="ask-send" type="submit">Ask</button>
-        </form>
-
-        <noscript>
-          <style>.ask-form, .ask-starters { display: none; }</style>
-          <p class="note ask-note">JavaScript is off, so this can't reach the assistant.
-            Email Vineet directly — <a href="mailto:vineet.vora123@gmail.com">vineet.vora123@gmail.com</a>.</p>
-        </noscript>
-
-        <ul class="ask-starters" id="askStarters">
-          <li><button type="button">What did the thesis actually achieve?</button></li>
-          <li><button type="button">Has he worked with distributed systems?</button></li>
-          <li><button type="button">What has he cut from a project, and why?</button></li>
-          <li><button type="button">Is he available, and where?</button></li>
-        </ul>
-
-        <div class="ask-answer" id="askAnswer" aria-live="polite"></div>
-      </div>
-    </div>
   </div>
 </section>
 
@@ -509,6 +455,49 @@
 </footer>
 
 <script src="script.js" defer></script>
+<!-- ══ ASK WIDGET ═══════════════════════════════════════════════ -->
+<div class="askw" id="askw">
+  <div class="askw-panel" id="askwPanel" role="dialog" aria-label="Ask about Vineet" hidden>
+    <div class="askw-head">
+      <p class="askw-kicker" aria-hidden="true">Fig. 0 · Ask</p>
+      <button class="askw-close" id="askwClose" aria-label="Close">&#215;</button>
+    </div>
+
+    <p class="askw-standfirst">Ask this dossier a question. Answers come only from
+      Vineet's notes, with links to the source where it cites one.</p>
+
+    <form class="ask-form" id="askForm">
+      <label class="vh" for="askInput">Your question</label>
+      <input class="ask-input" id="askInput" name="question" type="text"
+             maxlength="500" autocomplete="off"
+             placeholder="What did the thesis actually achieve?">
+      <button class="ask-send" type="submit">Ask</button>
+    </form>
+
+    <ul class="ask-starters" id="askStarters">
+      <li><button type="button">What did the thesis actually achieve?</button></li>
+      <li><button type="button">Has he worked with distributed systems?</button></li>
+      <li><button type="button">What has he cut from a project, and why?</button></li>
+      <li><button type="button">Is he available, and where?</button></li>
+    </ul>
+
+    <div class="ask-answer" id="askAnswer" aria-live="polite"></div>
+
+    <p class="askw-foot"><span id="askStats">30 blocks · ~2,009 tokens</span> in context
+      &#183; no retrieval &#8212; the corpus fits</p>
+  </div>
+
+  <div class="askw-teaser" id="askwTeaser" hidden aria-hidden="true">
+    <button class="askw-teaser-close" id="askwTeaserClose" tabindex="-1">&#215;</button>
+    <p class="askw-teaser-text" id="askwTeaserText"></p>
+  </div>
+
+  <button class="askw-launcher" id="askwLauncher" aria-expanded="false" aria-controls="askwPanel">
+    <span class="askw-dot" aria-hidden="true"></span>Ask
+  </button>
+</div>
+<noscript><style>.askw { display: none; }</style></noscript>
+
 <script src="ask.js" defer></script>
 </body>
 </html>
