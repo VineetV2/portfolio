@@ -166,7 +166,8 @@ CV is available as a PDF from the site.
 source: #cover | Cover
 Vineet is based in Newark, New Jersey. His MS in Artificial Intelligence at NJIT is
 expected in June 2027, and he is currently open to Forward Deployed Engineer roles
-based in Newark NJ, in the New York metropolitan area, or remote.
+based in Newark NJ, in the New York metropolitan area, or remote. He is also willing
+to relocate anywhere in the United States for the right role.
 
 ## vitopia-scope
 source: https://www.linkedin.com/in/vineetv2 | LinkedIn
