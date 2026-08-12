@@ -199,3 +199,10 @@ source: https://www.linkedin.com/in/vineetv2 | LinkedIn
 As Head of Finance for Beat The Heat, Vineet owned the club's annual budget and
 negotiated supplier contracts, building the financial plan the committee used to
 decide what the club could afford to take on.
+
+## face-attendance-overview
+source: #s02 | Selected Work, Fig. 6
+In January 2025, Vineet built a face-based attendance automation system: a live
+classroom camera feed runs YOLO face detection and FaceNet identity matching, and
+attendance is logged to an Excel sheet with no manual roll call. Built with Python
+and OpenCV. Code is at github.com/VineetV2/Face-Based-Attendance-Automation.
