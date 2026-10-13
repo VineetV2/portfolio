@@ -8,7 +8,7 @@ Intelligence at NJIT.
 ## Concept
 
 The page is a technical document rather than a website — a dossier. Sections are numbered
-(`§ 01`–`§ 06`), projects are plated figures (`Fig. 1`–`Fig. 5`) with their metadata set in
+(`§ 01`–`§ 07`), projects are plated figures (`Fig. 1`–`Fig. 5`) with their metadata set in
 the margin, results are typeset tables rather than metric cards, the publication is `Ref. 1`,
 and the footer is a colophon.
 

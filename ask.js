@@ -121,7 +121,7 @@
 
     function fallback() {
       pendingTurn.remove()
-      addTurn([para('Could not reach the assistant. Vineet\'s email is in § 06.')], 'bot')
+      addTurn([para('Could not reach the assistant. Vineet\'s email is in § 07.')], 'bot')
     }
 
     fetch('/api/ask', {
@@ -221,9 +221,10 @@
 
   var TEASERS = {
     s01: 'Want the short version? I can answer questions about Vineet.',
-    s02: 'Curious about the thesis? Ask me what it actually achieved.',
-    s04: 'I can tell you more about the wildfire paper — just ask.',
-    s06: 'Anything unanswered? Ask here, or use the email below.'
+    s02: 'Ask what he is building on the HPC team at NJIT.',
+    s03: 'Curious about the thesis? Ask me what it actually achieved.',
+    s05: 'I can tell you more about the wildfire paper — just ask.',
+    s07: 'Anything unanswered? Ask here, or use the email below.'
   }
   var TEASER_CAP = 2
   var FIRST_TEASER_DELAY = 5000
