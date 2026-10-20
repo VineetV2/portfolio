@@ -3,6 +3,7 @@ import { parseSources, validateCitations, isRefusal } from './response.js'
 import { checkInput, matchDeflection, sanitizeHistory } from './guards.js'
 import { buildMessages, REFUSAL_REPLY, UNAVAILABLE_REPLY, INVALID_REPLY } from './prompt.js'
 import FACTS from '../corpus/facts.md'
+import { isCareerOpsPath, handleCareerOps } from './career-ops.js'
 
 // Parsed once at module scope: a malformed corpus fails on cold start at deploy,
 // not intermittently in front of a visitor.
@@ -40,6 +41,7 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url)
 
+    if (isCareerOpsPath(url.pathname)) return handleCareerOps(request, env)
     if (url.pathname !== '/api/ask') return env.ASSETS.fetch(request)
     if (request.method !== 'POST') return json({ error: 'method not allowed' }, 405)
 

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="paper">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Career Ops</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23FAF8F3'/%3E%3Crect x='12' y='12' width='76' height='6' fill='%2316150F'/%3E%3Ctext x='12' y='78' font-family='Georgia,serif' font-weight='700' font-size='62' fill='%23C8391A'%3EC%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=DM+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/career-ops/cops.css">
+<script>
+  try { var t = localStorage.getItem('v3theme'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) {}
+</script>
+</head>
+<body>
+<header class="bar">
+  <div class="bar-l">
+    <a class="mark" href="/">vineetvora.dev</a>
+    <span class="slash">/</span>
+    <h1>Career Ops</h1>
+  </div>
+  <div class="bar-r">
+    <button id="helper" class="chip" type="button" title="Mac Apply helper">Mac helper: checking…</button>
+    <span id="who" class="mono dim"></span>
+    <button id="theme" class="icon" type="button" aria-label="Toggle theme">◐</button>
+  </div>
+</header>
+
+<main>
+  <section class="summary" id="summary" aria-live="polite"></section>
+
+  <nav class="tabs" role="tablist">
+    <button role="tab" data-tab="picks" aria-selected="true">Picks</button>
+    <button role="tab" data-tab="all">All evaluated</button>
+    <button role="tab" data-tab="scans">Scanned</button>
+    <button role="tab" data-tab="daily">Daily summaries</button>
+  </nav>
+
+  <section id="tab-picks" class="tab">
+    <div class="toolbar">
+      <label class="mono"><input type="checkbox" id="pickAll"> select all</label>
+      <button id="applySelected" class="btn primary" type="button" disabled>Apply to selected</button>
+      <span class="mono dim" id="applyNote">Fills each form on your Mac and stops before Submit.</span>
+    </div>
+    <div id="picks" class="list"></div>
+  </section>
+
+  <section id="tab-all" class="tab" hidden>
+    <div class="toolbar">
+      <input id="filter" type="search" placeholder="Filter by company, role, status…" class="search">
+    </div>
+    <div id="all" class="list"></div>
+  </section>
+
+  <section id="tab-scans" class="tab" hidden>
+    <div class="toolbar">
+      <label class="mono">scan date <select id="scanDate"></select></label>
+    </div>
+    <div id="scanCounts" class="counts"></div>
+    <div id="scans" class="list"></div>
+  </section>
+
+  <section id="tab-daily" class="tab" hidden>
+    <div class="toolbar"><select id="dailyPick"></select></div>
+    <article id="daily" class="md"></article>
+  </section>
+</main>
+
+<aside id="detail" class="detail" hidden aria-label="Job detail">
+  <div class="detail-head">
+    <div>
+      <div class="mono dim" id="dMeta"></div>
+      <h2 id="dTitle"></h2>
+    </div>
+    <div class="detail-actions">
+      <a id="dPosting" class="btn" target="_blank" rel="noopener noreferrer">Posting ↗</a>
+      <button id="dApply" class="btn primary" type="button">Apply</button>
+      <button id="dClose" class="icon" type="button" aria-label="Close">✕</button>
+    </div>
+  </div>
+  <div class="detail-tabs" role="tablist">
+    <button role="tab" data-d="report" aria-selected="true">Report</button>
+    <button role="tab" data-d="pdf">Tailored resume</button>
+  </div>
+  <article id="dReport" class="md"></article>
+  <div id="dPdf" class="pdf" hidden></div>
+</aside>
+
+<dialog id="tokenDlg">
+  <form method="dialog">
+    <h3>Connect the Mac helper</h3>
+    <p>On your Mac, run <code>node scripts/apply-helper/apply-helper.mjs token</code> inside your career-ops folder and paste the token here. It stays in this browser only.</p>
+    <input id="tokenIn" type="password" autocomplete="off" placeholder="helper token" class="search">
+    <menu>
+      <button value="cancel" class="btn">Cancel</button>
+      <button value="ok" class="btn primary" id="tokenOk">Save</button>
+    </menu>
+  </form>
+</dialog>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+<script src="/career-ops/app.js"></script>
+</body>
+</html>
