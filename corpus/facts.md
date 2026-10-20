@@ -17,31 +17,46 @@ shipping over polishing, and knowing when to cut scope.
 source: #s03 | Selected Work, Fig. 1
 Vineet's master's thesis at NJIT (Jan 2026 – present) turns plain-English business
 questions into working SQL against enterprise databases the model has never seen.
-The pipeline has five stages: schema linking, candidate generation, targeted
-decomposition, self-repair, and a consensus vote across candidates. The backbone
-model is Qwen3-Coder-30B, an open-source model. The stack is Python, vLLM,
-PyTorch, SLURM, and SQLite.
+The system is called TRIDENT SQL and works in four phases. Phase 1, pre-processing:
+every text value in the database is embedded for lookup, 6,601 solved training
+questions are indexed by query shape, and Query-Tree Rules are distilled from the
+model's training-set mistakes, each kept only if it raises accuracy. Phase 2, schema
+linking: the question is anchored to the values and columns it needs, giving a
+focused schema. Phase 3, SQL generation: three writers each draft four candidate
+queries, twelve in all; the third, Plan-and-Fragment, first commits to exactly what
+the question asks to return, then translates every domain hint into a precise SQL
+fragment and assembles the query from those pieces verbatim. Phase 4, correction and
+selection: each candidate passes eight repair checks; the Query Tree then decomposes
+the English question into a tree of what it demands and parses the SQL into a tree of
+what it does, compares them branch by branch, and repairs only the flagged branches;
+finally Cross-Writer Agreement gives each writer one vote, with an LLM judge settling
+close calls. Vineet designed and built the new components: Query-Tree Rules,
+Plan-and-Fragment, the Query Tree, and Cross-Writer Agreement. The backbone model is gpt-oss-120b, an
+open-weight model. The system is training-free: no model weights are updated, and
+every improvement comes at inference time. The stack is Python, vLLM, PyTorch,
+SLURM, and SQLite.
 
 ## thesis-accuracy
 source: #s03 | Selected Work, Fig. 1
-The thesis system reaches 70.2% execution accuracy on BIRD, a benchmark of 1,534
+TRIDENT SQL achieved 70% execution accuracy on the BIRD development set: 1,534
 questions across 11 distinct real-world databases.
 
 ## thesis-open-source
 source: #s03 | Selected Work, Fig. 1
-The thesis system runs on open-source models only, with zero proprietary APIs. That
+The thesis system runs on open-weight models only, with zero proprietary APIs. That
 constraint is deliberate: it means the system can be deployed inside a company's own
 environment with no data leaving it — the difference between a demo and something a
 regulated customer can actually run.
 
 ## thesis-status
 source: #s03 | Selected Work, Fig. 1
-The thesis is in progress. Its code repository is not yet public.
+The thesis write-up is in progress. The TRIDENT SQL code is public at
+github.com/VineetV2/Trident-SQL.
 
 ## thesis-infrastructure
 source: https://vineetvora.dev/Vineet_Vora.pdf | Résumé (PDF)
-For the thesis, Vineet served 30B-parameter models on a 2×A100 SLURM cluster using
-vLLM. He built checkpoint/resume, per-question timeouts, and graceful degradation so
+For the thesis, Vineet serves gpt-oss-120b locally with vLLM on NJIT's Wulver SLURM
+GPU cluster. He built checkpoint/resume, per-question timeouts, and graceful degradation so
 that an eight-hour evaluation run never restarts from zero after a single failure.
 
 ## thesis-variant-cut

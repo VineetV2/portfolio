@@ -249,6 +249,76 @@ table { border-collapse: collapse; width: 100%; }
 .exp-list li { position: relative; padding-left: 1.4rem; }
 .exp-list li + li { margin-top: 0.75rem; }
 .exp-list li::before { content: "—"; position: absolute; left: 0; color: var(--accent); }
+.exp-list em { font-style: italic; color: var(--ink); }
+
+/* highlighted thesis components (Fig. 1) */
+mark.ours {
+  background: var(--accent-w); color: var(--ink);
+  border-bottom: 1.5px solid var(--accent);
+  padding: 0 0.2em; font-weight: 500;
+}
+
+/* pipeline diagram (Fig. 1): four phases, new components in accent */
+.pipe { container-type: inline-size; font-family: var(--mono); }
+.pipe .pipe-in {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 0.4rem 1.4rem;
+  font-size: 0.7rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-3);
+  padding-bottom: 0.9rem; position: relative;
+}
+.pipe-in::after {
+  content: "↓"; position: absolute; left: 50%; bottom: -0.35rem;
+  transform: translateX(-50%); color: var(--ink-3);
+}
+.pipe-phases {
+  list-style: none; display: grid; grid-template-columns: 1fr; gap: 1.6rem;
+  margin-top: 0.9rem;
+}
+.ph {
+  position: relative; display: flex; flex-direction: column;
+  border: 1px solid var(--rule-2); background: var(--paper-2);
+  padding: 0.85rem 0.8rem 0.8rem;
+}
+.ph:not(:last-child)::after {
+  content: "↓"; position: absolute; left: 50%; bottom: -1.45rem;
+  transform: translateX(-50%); color: var(--ink-3); font-size: 0.9rem;
+}
+.pipe .ph-n { font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.pipe .ph-t {
+  font-family: var(--display); font-weight: 600; font-size: 1rem; line-height: 1.2;
+  letter-spacing: -0.01em; color: var(--ink); margin: 0.15rem 0 0.7rem;
+}
+.pipe .ph-q { font-size: 0.66rem; color: var(--accent); margin: -0.45rem 0 0.55rem; }
+.ph ul { list-style: none; display: grid; gap: 0.35rem; flex: 1; align-content: start; }
+.ph ul li {
+  font-size: 0.72rem; line-height: 1.35; color: var(--ink-2);
+  border: 1px solid var(--rule); background: var(--paper); padding: 0.4rem 0.5rem;
+}
+.ph ul li i { font-style: normal; color: var(--ink-3); white-space: nowrap; }
+.ph ul li.new {
+  color: var(--ink); font-weight: 500; background: var(--accent-w);
+  border-color: var(--accent); border-left-width: 3px;
+}
+.pipe .ph-out {
+  margin-top: 0.7rem; padding: 0.4rem 0.5rem; text-align: center;
+  font-size: 0.7rem; letter-spacing: 0.03em; background: var(--ink); color: var(--paper);
+}
+.pipe .ph-out.is-final { background: var(--accent); color: #fff; }
+[data-theme="night"] .pipe .ph-out.is-final { color: var(--paper); }
+.pipe figcaption {
+  font-size: 0.72rem; color: var(--ink-3);
+  margin-top: 0.9rem; padding-top: 0.45rem; border-top: 1px solid var(--rule);
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.pipe .key {
+  width: 0.9rem; height: 0.7rem; flex: none;
+  background: var(--accent-w); border: 1px solid var(--accent); border-left-width: 3px;
+}
+@container (min-width: 600px) {
+  .pipe-phases { grid-template-columns: repeat(4, 1fr); gap: 1.1rem; }
+  .pipe .pipe-in { justify-content: flex-start; }
+  .pipe-in::after { left: calc(12.5% - 0.4rem); transform: none; }
+  .ph:not(:last-child)::after { left: auto; right: -0.95rem; bottom: auto; top: 50%; transform: translateY(-50%); content: "→"; }
+}
 
 .lede {
   font-family: var(--display); font-weight: 400;

@@ -21,8 +21,10 @@ answerable | What is Peon? | contains:MCP
 answerable | What conference was his paper published at? | contains:NJFET
 answerable | What has he cut from a project? | contains:variant
 answerable | What did he do at VITOPIA? | contains:sponsorship
-answerable | What model backbone did the thesis use? | contains:Qwen
-answerable | What was the execution accuracy rate on the thesis benchmark? | contains:70.2
+answerable | What model backbone did the thesis use? | contains:gpt-oss
+answerable | What was the execution accuracy rate on the thesis benchmark? | cites:thesis-accuracy && contains:70 && not-contains:70.2
+answerable | What components did he build for the thesis? | contains:Plan-and-Fragment
+answerable | Where is the thesis code? | contains:Trident-SQL
 absent | What is his favourite film? | refusal
 absent | Does he play any instruments? | refusal
 absent | What was his high school GPA? | refusal

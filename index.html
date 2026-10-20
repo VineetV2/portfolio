@@ -218,7 +218,7 @@
         <dl class="fig-meta">
           <div><dt>Period</dt><dd>Jan 2026 — present</dd></div>
           <div><dt>Context</dt><dd>MS thesis, NJIT</dd></div>
-          <div><dt>Stack</dt><dd>Python · vLLM · PyTorch · Qwen3-Coder-30B · SLURM · SQLite</dd></div>
+          <div><dt>Stack</dt><dd>Python · vLLM · PyTorch · gpt-oss-120b · SLURM · SQLite</dd></div>
         </dl>
       </aside>
       <div class="col">
@@ -227,25 +227,97 @@
           Natural language to SQL over enterprise databases the model has never seen.
         </p>
         <p>
-          What if someone who doesn't write SQL could just ask? The system turns plain-English
-          business questions into working SQL against unfamiliar multi-table schemas — schema
-          linking, candidate generation, targeted decomposition, self-repair, consensus vote.
+          What if someone who doesn't write SQL could just ask? TRIDENT SQL turns plain-English
+          business questions into working SQL against unfamiliar multi-table schemas, in four
+          phases. The <mark class="ours">highlighted</mark> components were designed and built
+          for this thesis.
         </p>
+        <figure class="pipe">
+          <p class="pipe-in"><span>Target database</span><span>6,601 training questions</span></p>
+          <ol class="pipe-phases">
+            <li class="ph">
+              <p class="ph-n">Phase 1</p>
+              <p class="ph-t">Pre-processing</p>
+              <ul>
+                <li>Value index</li>
+                <li>Example index</li>
+                <li class="new">Query-Tree Rules</li>
+              </ul>
+              <p class="ph-out">Indexes &amp; rules</p>
+            </li>
+            <li class="ph">
+              <p class="ph-n">Phase 2</p>
+              <p class="ph-t">Schema linking</p>
+              <p class="ph-q">+ user's question</p>
+              <ul>
+                <li>Value retrieval</li>
+                <li>Column finding</li>
+              </ul>
+              <p class="ph-out">Focused schema</p>
+            </li>
+            <li class="ph">
+              <p class="ph-n">Phase 3</p>
+              <p class="ph-t">SQL generation</p>
+              <ul>
+                <li>Divide-and-conquer <i>×4</i></li>
+                <li>Example-based <i>×4</i></li>
+                <li class="new">Plan-and-Fragment <i>×4</i></li>
+              </ul>
+              <p class="ph-out">12 candidate SQLs</p>
+            </li>
+            <li class="ph">
+              <p class="ph-n">Phase 4</p>
+              <p class="ph-t">Correction &amp; selection</p>
+              <ul>
+                <li>Repair <i>8 checks</i></li>
+                <li class="new">Query Tree</li>
+                <li class="new">Cross-Writer Agreement</li>
+              </ul>
+              <p class="ph-out is-final">Final SQL</p>
+            </li>
+          </ol>
+          <figcaption><span class="key" aria-hidden="true"></span>Highlighted steps were designed and built for this thesis.</figcaption>
+        </figure>
+        <ol class="exp-list phases">
+          <li><em>Phase 1 · Pre-processing.</em> Before a single question arrives, the system
+            studies its terrain. Every text value in the database is embedded for lookup, 6,601
+            solved training questions are indexed by the shape of their queries, and
+            <mark class="ours">Query-Tree Rules</mark> are distilled from the mistakes the model
+            makes on the training set, each rule kept only if it measurably raises accuracy.</li>
+          <li><em>Phase 2 · Schema linking.</em> The question is anchored to the database values
+            it mentions and to the columns it truly needs, narrowing a sprawling schema to a
+            focused one.</li>
+          <li><em>Phase 3 · SQL generation.</em> Three independent writers each draft four
+            candidate queries, twelve in all. One decomposes the problem, one learns from similar
+            solved examples, and the third, <mark class="ours">Plan-and-Fragment</mark>, reasons
+            before it writes: it first commits to exactly what the question asks to return, then
+            translates every domain hint into a precise SQL fragment and assembles the query from
+            those pieces verbatim, so no formula, literal or unit is lost in translation.</li>
+          <li><em>Phase 4 · Correction and selection.</em> Each candidate passes eight repair
+            checks. The <mark class="ours">Query Tree</mark> then performs a structural audit:
+            the English question is decomposed into a tree of what it demands, the SQL is parsed
+            into a tree of what it actually does, and the two are compared branch by branch. Only
+            the flagged branches are repaired; every correct part of the query is left untouched.
+            Finally, <mark class="ours">Cross-Writer Agreement</mark> chooses the answer: each
+            writer casts a single vote, so no writer can win on volume alone, and an LLM judge
+            settles the genuinely close calls.</li>
+        </ol>
         <p>
-          It runs on <em>open-source models only</em>. No proprietary API, which means it can be
+          It achieved <em>70% execution accuracy on the BIRD dev set</em>, running on
+          <em>open-weight models only</em> and training-free. No proprietary API, which means it can be
           deployed inside a company's own environment with no data leaving it — the difference
           between a demo and something a regulated customer can actually run.
         </p>
         <table class="data">
-          <caption class="vh">Results on the BIRD benchmark</caption>
+          <caption class="vh">Results on the BIRD dev set</caption>
           <tbody>
-            <tr><th scope="row">Execution accuracy</th><td class="fignum">70.2<small>%</small></td></tr>
+            <tr><th scope="row">Execution accuracy</th><td class="fignum">70<small>%</small></td></tr>
             <tr><th scope="row">Benchmark questions</th><td class="fignum">1,534</td></tr>
             <tr><th scope="row">Distinct databases</th><td class="fignum">11</td></tr>
             <tr><th scope="row">Proprietary APIs</th><td class="fignum">0</td></tr>
           </tbody>
         </table>
-        <p class="src is-pending"><span aria-hidden="true">— </span>Thesis in progress. Repository not yet public.</p>
+        <p class="src"><a href="https://github.com/VineetV2/Trident-SQL" target="_blank" rel="noopener">github.com/VineetV2/Trident-SQL <span aria-hidden="true">↗</span></a></p>
       </div>
     </article>
 
@@ -577,7 +649,7 @@
       <button class="ask-send" type="submit">Ask</button>
     </form>
 
-    <p class="askw-foot"><span id="askStats">32 blocks · ~2,195 tokens</span> in context
+    <p class="askw-foot"><span id="askStats">32 blocks · ~2,501 tokens</span> in context
       &#183; no retrieval &#8212; the corpus fits</p>
   </div>
 
