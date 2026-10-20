@@ -119,9 +119,9 @@
     addTurn([para(question, 'ask-q')], 'user')
     var pendingTurn = addTurn([para('reading the dossier…', 'ask-pending')], 'bot')
 
-    function fallback() {
+    function fallback(message) {
       pendingTurn.remove()
-      addTurn([para('Could not reach the assistant. Vineet\'s email is in § 07.')], 'bot')
+      addTurn([para(message || 'Could not reach the assistant. Vineet\'s email is in § 07.')], 'bot')
     }
 
     fetch('/api/ask', {
@@ -130,11 +130,18 @@
       body: JSON.stringify({ question: question, history: history.slice(-HISTORY_SENT) })
     })
       .then(function (r) {
+        // The Cloudflare rate-limit rule answers 429 with a plain-text body,
+        // which r.json() cannot parse — catch it before it reads as an outage.
+        if (r.status === 429) return { rateLimited: true }
         return r.json().then(function (data) {
           return { ok: r.ok, data: data }
         })
       })
       .then(function (result) {
+        if (result.rateLimited) {
+          fallback('That was a lot of questions in a row. Give it a minute and ask again.')
+          return
+        }
         var data = result.data
         if (!result.ok || !data || typeof data.answer !== 'string') {
           fallback()

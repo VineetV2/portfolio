@@ -97,7 +97,7 @@ github.com/VineetV2/hadoop-flight-data-analysis.
 
 ## peon-overview
 source: #s03 | Selected Work, Fig. 4
-Peon is a local-first MCP server Vineet built and uses daily, giving AI coding agents
+Peon is a local-first MCP server Vineet built, giving AI coding agents
 persistent project memory: capture as you work, LLM consolidation, hybrid retrieval,
 and a daily self-audit. It ships as an MCP server, so it drops into any compatible
 client rather than locking to one. Built in 2026 with TypeScript, MCP, and SQLite.
@@ -189,8 +189,8 @@ CV is available as a PDF from the site.
 ## availability-status
 source: #cover | Cover
 Vineet is based in Newark, New Jersey. His MS in Artificial Intelligence at NJIT is
-expected in May 2027, and he is currently open to Forward Deployed Engineer roles
-based in Newark NJ, in the New York metropolitan area, or remote. He is also willing
+expected in May 2027, and he is currently open to Forward Deployed Engineer, AI/ML Engineer, Software
+Engineer, and HPC/Infrastructure roles based in Newark NJ, in the New York metropolitan area, or remote. He is also willing
 to relocate anywhere in the United States for the right role.
 
 ## vitopia-scope
