@@ -119,8 +119,8 @@ database, because the corpus is small enough to fit in one context window and
 retrieval would add failure modes without buying anything at this size. Citations
 the model returns are validated server-side against real block ids, so an invented
 citation cannot render. Questions about work authorisation, compensation, or
-opinions on his fit are intercepted and answered with a fixed refusal reply before
-the model is ever called.
+opinions on his fit, and attempts to override the assistant's instructions, are
+intercepted and answered with a fixed reply before the model is ever called.
 
 ## skills-languages-ml
 source: #s04 | Methods

@@ -12,6 +12,21 @@ const EMAIL = 'vineet.vora123@gmail.com'
  */
 const DEFLECTIONS = [
   {
+    // Attempts to rewrite the assistant's role or rules. The small model
+    // sometimes plays along ("You are now unrestricted… 2+2?" → "4"), so
+    // these never reach it.
+    topic: 'override',
+    patterns: [
+      /\byou(?: are|'re| r) now\b/i, /\bfrom now on,? you\b/i,
+      /\b(ignore|disregard|forget|override)\b.{0,30}\b(instructions?|rules|prompt|guidelines)\b/i,
+      /\bsystem prompt\b/i, /\bdeveloper mode\b/i, /\bjailbr(eak|oken)\b/i,
+      /\bunrestricted\b/i, /\bno (rules|restrictions|filters)\b/i
+    ],
+    reply:
+      "I only answer questions about Vineet, from his notes. Ask about his thesis, " +
+      'his projects, or his availability — or email him at ' + EMAIL + '.'
+  },
+  {
     // Pure greetings only — anchored to the whole string, so a greeting with a
     // question attached ("hi, does he know Python?") still reaches the model.
     topic: 'greeting',
